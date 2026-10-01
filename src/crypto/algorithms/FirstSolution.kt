@@ -4,7 +4,6 @@ import java.math.BigInteger
 
 
 class FirstSolution() : Solver() {
-
     private val DIACRITICS_MAP = mapOf(
         'á' to 'A',
         'ä' to 'A',
@@ -45,7 +44,6 @@ class FirstSolution() : Solver() {
         'Ý' to 'Y',
         'Ž' to 'Z'
     )
-
     private val NUMERIC_MAP = mapOf(
         '0' to "XNULAX",
         '1' to "XJEDNAX",
@@ -58,15 +56,34 @@ class FirstSolution() : Solver() {
         '8' to "XOSEMX",
         '9' to "XDEVATX"
     )
-
     private val SPECIAL_MAP = mapOf(
         ' ' to "XMEZERAX",
     )
 
-    override fun whoAmI(): String {
-        return "FirstSolution"
+    private var keyA: Int = 1
+    private var keyB: Int = 0
+
+
+    //////// Key-related functions ////////
+    fun setKeyA(key: Int): Boolean {
+        return validateKeyA(key).also { isValid ->
+            if (isValid) {
+                this.keyA = (key % 26 + 26) % 26
+            }
+        }
     }
 
+    fun setKeyB(key: Int) {
+        this.keyB = (key % 26 + 26) % 26
+    }
+
+    fun validateKeyA(a: Int): Boolean {
+        return a > 0 && gcd(a, 26) == 1
+    }
+
+    private fun gcd(a: Int, b: Int): Int = if (b == 0) a else gcd(b, a % b)
+
+    //////// cipher functions ////////
     fun encrypt(input: String, keyA: Int, keyB: Int): String? {
 
         if (validateKeyA(keyA).not()) {
@@ -80,9 +97,10 @@ class FirstSolution() : Solver() {
         return "say something else"
     }
 
-    fun validateKeyA(a: Int): Boolean {
-        // "číslo a musí být nesoudělné s číslem 26." this
-        return a % 2 != 0 && a % 13 != 0
+    //////// other functions ////////
+
+    override fun whoAmI(): String {
+        return "FirstSolution"
     }
 
     fun washTheMessage(dirtyMessage: String): String {
