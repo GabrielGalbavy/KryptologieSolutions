@@ -1,7 +1,5 @@
 ﻿package crypto.algorithms
 
-import java.math.BigInteger
-
 
 class FirstSolution() : Solver() {
     private val DIACRITICS_MAP = mapOf(
@@ -83,14 +81,20 @@ class FirstSolution() : Solver() {
 
     private fun gcd(a: Int, b: Int): Int = if (b == 0) a else gcd(b, a % b)
 
-    //////// cipher functions ////////
-    fun encrypt(input: String, keyA: Int, keyB: Int): String? {
 
-        if (validateKeyA(keyA).not()) {
-            return null
+    //////// cipher functions ////////
+
+    fun encrypt(input: String): String {
+        var output = ""
+        val cleanInput = washTheMessage(input)
+
+        cleanInput.forEach { character ->
+            val charIndex = character - 'A'
+            val encryptedCharIndex = (keyA * charIndex + keyB) % 26
+            output += 'A' + encryptedCharIndex
         }
 
-        return "input"
+        return output
     }
 
     fun decrypt(input: String): String {
@@ -103,10 +107,10 @@ class FirstSolution() : Solver() {
         return "FirstSolution"
     }
 
-    fun washTheMessage(dirtyMessage: String): String {
+    fun washTheMessage(notCleanedMessage: String): String {
         var cleanMessage = ""
 
-        dirtyMessage.forEach { character ->
+        notCleanedMessage.forEach { character ->
             cleanMessage += when {
 
                 // check for mapped chars
