@@ -19,5 +19,16 @@ fun main() {
     */
     println("Solve for One:")
     val firstSolver = FirstSolution()
-    println((firstSolver.washTheMessage("toto je moja sprava @%*^(#$%*(@)_^# !@ %@ %$ %@$ FGSDG 4231F")))
+    println("key A:")
+    val keyA = readln().toInt()
+    firstSolver.setKeyA(keyA)
+
+    println("key B:")
+    val keyB = readln().toInt()
+    firstSolver.setKeyB(keyB)
+
+    println("your message:")
+    val ourMsg = readln()
+    println("output:")
+    println(firstSolver.encrypt(ourMsg))
 }
