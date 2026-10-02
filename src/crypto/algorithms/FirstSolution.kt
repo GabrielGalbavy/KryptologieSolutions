@@ -94,7 +94,7 @@ class FirstSolution() : Solver() {
             output += 'A' + encryptedCharIndex
         }
 
-        return output
+        return sliceTheCode(output).trim()
     }
 
     fun decrypt(input: String): String {
@@ -126,6 +126,19 @@ class FirstSolution() : Solver() {
             }
         }
         return cleanMessage
+    }
+
+    fun sliceTheCode(orig: String): String {
+        var counter = 1
+        var output = ""
+        orig.forEach { character ->
+            if (counter == 5) {
+                output += "$character "
+                counter = 0
+            } else output += character
+            counter++
+        }
+        return output
     }
 }
 
