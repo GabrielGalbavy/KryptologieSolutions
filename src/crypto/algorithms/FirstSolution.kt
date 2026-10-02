@@ -132,10 +132,8 @@ class FirstSolution() : Solver() {
         var counter = 1
         var output = ""
         orig.forEach { character ->
-            if (counter == 5) {
-                output += "$character "
-                counter = 0
-            } else output += character
+            output += character
+            if (counter % 5 == 0) output += " "
             counter++
         }
         return output
