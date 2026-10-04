@@ -17,6 +17,7 @@ fun main() {
         frame.isVisible = true
     }
     */
+
     println("Solve for One:")
     val firstSolver = FirstSolution()
     println("key A:")
@@ -30,14 +31,14 @@ fun main() {
     println("your message:")
     val ourMsg = readln()
 
-    println("reverse the alg:")
-    val reversed: Int = readln().toInt()
-    var res: String
-
-    if (reversed == 1) {
-        res = firstSolver.encrypt(ourMsg, true)
-    } else res = firstSolver.encrypt(ourMsg, false)
+    val res = firstSolver.encrypt(ourMsg)
 
     println("output:")
     println(res)
+    println(firstSolver.decrypt(res))
+
+//    var x = readln()
+//    val firstSolver = FirstSolution()
+//    println(firstSolver.decrypt(x))
+
 }

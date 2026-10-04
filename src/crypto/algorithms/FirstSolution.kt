@@ -1,33 +1,57 @@
 ﻿package crypto.algorithms
 
 import crypto.models.Solver
-import kotlin.math.pow
 
 
 class FirstSolution() : Solver() {
     override val name: String = "Afinní šifra"
 
-    override fun whoAmI(): String {
+    override fun whoAmI(): String { // possibly pointless
         return name
     }
 
 
     //////// variables ////////
+
     private val DIACRITICS_MAP = mapOf(
-        'á' to 'A', 'ä' to 'A', 'Á' to 'A', 'Ä' to 'A',
-        'č' to 'C', 'Č' to 'C',
-        'ď' to 'D', 'Ď' to 'D',
-        'é' to 'E', 'ě' to 'E', 'É' to 'E', 'Ě' to 'E',
-        'í' to 'I', 'Í' to 'I',
-        'ĺ' to 'L', 'Ĺ' to 'L', 'ľ' to 'L', 'Ľ' to 'L',
-        'ň' to 'N', 'Ň' to 'N',
-        'ó' to 'O', 'ô' to 'O', 'Ó' to 'O', 'Ô' to 'O',
-        'ŕ' to 'R', 'Ŕ' to 'R',
-        'š' to 'S', 'Š' to 'S',
-        'ť' to 'T', 'Ť' to 'T',
-        'ú' to 'U', 'ů' to 'U', 'Ú' to 'U', 'Ů' to 'U',
-        'ý' to 'Y', 'Ý' to 'Y',
-        'ž' to 'Z', 'Ž' to 'Z'
+        'á' to 'A',
+        'ä' to 'A',
+        'Á' to 'A',
+        'Ä' to 'A',
+        'č' to 'C',
+        'Č' to 'C',
+        'ď' to 'D',
+        'Ď' to 'D',
+        'é' to 'E',
+        'ě' to 'E',
+        'É' to 'E',
+        'Ě' to 'E',
+        'í' to 'I',
+        'Í' to 'I',
+        'ĺ' to 'L',
+        'Ĺ' to 'L',
+        'ľ' to 'L',
+        'Ľ' to 'L',
+        'ň' to 'N',
+        'Ň' to 'N',
+        'ó' to 'O',
+        'ô' to 'O',
+        'Ó' to 'O',
+        'Ô' to 'O',
+        'ŕ' to 'R',
+        'Ŕ' to 'R',
+        'š' to 'S',
+        'Š' to 'S',
+        'ť' to 'T',
+        'Ť' to 'T',
+        'ú' to 'U',
+        'ů' to 'U',
+        'Ú' to 'U',
+        'Ů' to 'U',
+        'ý' to 'Y',
+        'Ý' to 'Y',
+        'ž' to 'Z',
+        'Ž' to 'Z'
     )
     private val NUMERIC_MAP = mutableMapOf(
         '0' to "XNULAX",
@@ -43,44 +67,43 @@ class FirstSolution() : Solver() {
     )
     private val SPECIALS_MAP = mapOf(
         ' ' to "XMEZERAX",
+        '-' to "XCARKAX",
     )
 
+
     private var keyA: Int = 1
-    private var keyB: Int = 0
+    private var keyB: Int = 1
 
 
     //////// cipher functions ////////
 
-    fun encrypt(input: String, reversed: Boolean): String {
+    fun encrypt(input: String): String {
         var output = ""
-        var cleanInput = input
-
-        if (!reversed) {
-            cleanInput = washTheMessage(input)
-        }
+        val cleanInput = washTheMessage(input)
 
         cleanInput.forEach { character ->
             val charIndex = character - 'A'
-
-            output +=
-                if (!reversed) {
-                    'A' + (keyA * charIndex + keyB) % 26
-                } else {
-                    'A' + (keyA
-                        .toDouble()
-                        .pow(-1)
-                        .toInt() * (charIndex - keyB)) % 26
-                }
+            output += 'A' + (keyA * charIndex + keyB) % 26
         }
-        return if (reversed) {
-            output
-        } else {
-            sliceTheCode(output)
-        }
+        return sliceTheCode(output)
     }
 
     fun decrypt(input: String): String {
-        return "say something else"
+        val gibberish = input.replace(" ", "")
+        val message: MutableList<Char> = mutableListOf()
+        val aInverse = modInverse(keyA)
+
+        gibberish.forEach { character ->
+            val charIndex = character - 'A'
+
+            // D(y) = aInverse * (y - keyB) mod 26
+            val rawIndex = (aInverse * (charIndex - keyB)) % 26
+            val validIndex = (rawIndex + 26) % 26
+
+            message += 'A' + validIndex
+        }
+
+        return unwashTheMessage(message.joinToString(""))
     }
 
 
@@ -112,13 +135,10 @@ class FirstSolution() : Solver() {
 
         notCleanedMessage.forEach { character ->
             cleanMessage += when {
-
-                // check for mapped chars
                 DIACRITICS_MAP.containsKey(character) -> DIACRITICS_MAP[character]
                 NUMERIC_MAP.containsKey(character) -> NUMERIC_MAP[character]
                 SPECIALS_MAP.containsKey(character) -> SPECIALS_MAP[character]
 
-                // remaining chars to upper case
                 character in 'A'..'Z' || character in 'a'..'z' -> character.uppercaseChar()
 
                 // drop anything else
@@ -128,15 +148,30 @@ class FirstSolution() : Solver() {
         return cleanMessage
     }
 
-    fun sliceTheCode(orig: String): String {
-        var counter = 1
-        var output = ""
-        orig.forEach { character ->
-            output += character
-            if (counter % 5 == 0) output += " "
-            counter++
+    fun unwashTheMessage(notCleanedMessage: String): String {
+        var cleanMessage = notCleanedMessage
+
+        NUMERIC_MAP.forEach { set ->
+            cleanMessage = cleanMessage.replace(set.value, set.key.toString())
         }
-        return output
+
+        SPECIALS_MAP.forEach { set ->
+            cleanMessage = cleanMessage.replace(set.value, set.key.toString())
+        }
+
+        return cleanMessage
+    }
+
+    fun sliceTheCode(orig: String): String {
+        return orig.chunked(5).joinToString(" ")
+    }
+
+    private fun modInverse(keyA: Int, m: Int = 26): Int {
+        val normA = (keyA % m + m) % m
+        for (x in 1..<m) {
+            if ((normA * x) % m == 1) return x
+        }
+        return 1
     }
 }
 
