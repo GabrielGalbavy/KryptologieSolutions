@@ -53,7 +53,8 @@ class FirstSolution() : Solver() {
         'ž' to 'Z',
         'Ž' to 'Z'
     )
-    private val NUMERIC_MAP = mutableMapOf(
+    private val KEYWORDS_MAP = mutableMapOf(
+        // must have 1:1 key-value relation for decryption
         '0' to "XNULAX",
         '1' to "XJEDNAX",
         '2' to "XDVAX",
@@ -63,9 +64,8 @@ class FirstSolution() : Solver() {
         '6' to "XSESTX",
         '7' to "XSEDEMX",
         '8' to "XOSEMX",
-        '9' to "XDEVATX"
-    )
-    private val SPECIALS_MAP = mapOf(
+        '9' to "XDEVATX",
+
         ' ' to "XMEZERAX",
         '-' to "XCARKAX",
     )
@@ -136,8 +136,7 @@ class FirstSolution() : Solver() {
         notCleanedMessage.forEach { character ->
             cleanMessage += when {
                 DIACRITICS_MAP.containsKey(character) -> DIACRITICS_MAP[character]
-                NUMERIC_MAP.containsKey(character) -> NUMERIC_MAP[character]
-                SPECIALS_MAP.containsKey(character) -> SPECIALS_MAP[character]
+                KEYWORDS_MAP.containsKey(character) -> KEYWORDS_MAP[character]
 
                 character in 'A'..'Z' || character in 'a'..'z' -> character.uppercaseChar()
 
@@ -151,11 +150,7 @@ class FirstSolution() : Solver() {
     fun unwashTheMessage(notCleanedMessage: String): String {
         var cleanMessage = notCleanedMessage
 
-        NUMERIC_MAP.forEach { set ->
-            cleanMessage = cleanMessage.replace(set.value, set.key.toString())
-        }
-
-        SPECIALS_MAP.forEach { set ->
+        KEYWORDS_MAP.forEach { set ->
             cleanMessage = cleanMessage.replace(set.value, set.key.toString())
         }
 
@@ -174,5 +169,3 @@ class FirstSolution() : Solver() {
         return 1
     }
 }
-
-
