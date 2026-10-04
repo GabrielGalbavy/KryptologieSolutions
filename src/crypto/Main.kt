@@ -29,6 +29,15 @@ fun main() {
 
     println("your message:")
     val ourMsg = readln()
+
+    println("reverse the alg:")
+    val reversed: Int = readln().toInt()
+    var res: String
+
+    if (reversed == 1) {
+        res = firstSolver.encrypt(ourMsg, true)
+    } else res = firstSolver.encrypt(ourMsg, false)
+
     println("output:")
-    println(firstSolver.encrypt(ourMsg))
+    println(res)
 }
