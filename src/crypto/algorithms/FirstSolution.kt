@@ -4,7 +4,7 @@ import crypto.models.Solver
 
 
 class FirstSolution : Solver() {
-    override val name: String = "Afinní šifra"
+    override val name: String = "Afinní šifra - 1. ukol"
 
     override fun whoAmI(): String { // possibly pointless
         return name
@@ -77,7 +77,7 @@ class FirstSolution : Solver() {
 
     //////// cipher functions ////////
 
-    fun encrypt(input: String): String {
+    override fun encrypt(input: String): String {
         var output = ""
         val cleanInput = washTheMessage(input)
 
@@ -88,7 +88,7 @@ class FirstSolution : Solver() {
         return sliceTheCode(output)
     }
 
-    fun decrypt(input: String): String {
+    override fun decrypt(input: String): String {
         val gibberish = input.replace(" ", "") // unite the code blocks
         val message: MutableList<Char> = mutableListOf()
         val aInverse = modInverse(keyA)
@@ -159,7 +159,6 @@ class FirstSolution : Solver() {
         keywordsMap.forEach { set ->
             cleanMessage = cleanMessage.replace(set.value, set.key.toString())
         }
-
         return cleanMessage
     }
 
