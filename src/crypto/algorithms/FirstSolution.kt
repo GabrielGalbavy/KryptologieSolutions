@@ -3,7 +3,7 @@
 import crypto.models.Solver
 
 
-class FirstSolution() : Solver() {
+class FirstSolution : Solver() {
     override val name: String = "Afinní šifra"
 
     override fun whoAmI(): String { // possibly pointless
@@ -13,7 +13,7 @@ class FirstSolution() : Solver() {
 
     //////// variables ////////
 
-    private val DIACRITICS_MAP = mapOf(
+    private val diacriticsMap = mapOf(
         'á' to 'A',
         'ä' to 'A',
         'Á' to 'A',
@@ -53,7 +53,7 @@ class FirstSolution() : Solver() {
         'ž' to 'Z',
         'Ž' to 'Z'
     )
-    private val KEYWORDS_MAP = mutableMapOf(
+    private val keywordsMap = mutableMapOf(
         // must have 1:1 key-value relation for decryption
         '0' to "XNULAX",
         '1' to "XJEDNAX",
@@ -72,7 +72,7 @@ class FirstSolution() : Solver() {
 
 
     private var keyA: Int = 1
-    private var keyB: Int = 1
+    private var keyB: Int = 0
 
 
     //////// cipher functions ////////
@@ -89,7 +89,7 @@ class FirstSolution() : Solver() {
     }
 
     fun decrypt(input: String): String {
-        val gibberish = input.replace(" ", "")
+        val gibberish = input.replace(" ", "") // unite the code blocks
         val message: MutableList<Char> = mutableListOf()
         val aInverse = modInverse(keyA)
 
@@ -113,16 +113,23 @@ class FirstSolution() : Solver() {
         return validateKeyA(key).also { isValid ->
             if (isValid) {
                 this.keyA = (key % 26 + 26) % 26
+                println("Key A: " + this.keyA)
+            } else {
+                println("KEY A INVALID, setting to 1")
+                this.keyA = 1
             }
         }
     }
 
-    fun setKeyB(key: Int) {
+    fun setKeyB(key: Int): Boolean {
         this.keyB = (key % 26 + 26) % 26
+        println("Key B:" + this.keyB)
+        return true
     }
 
     fun validateKeyA(a: Int): Boolean {
-        return a > 0 && gcd(a, 26) == 1
+        val normalizedA = (a % 26 + 26) % 26
+        return normalizedA != 0 && gcd(normalizedA, 26) == 1
     }
 
     private fun gcd(a: Int, b: Int): Int = if (b == 0) a else gcd(b, a % b)
@@ -130,13 +137,12 @@ class FirstSolution() : Solver() {
 
     //////// other functions ////////
 
-    fun washTheMessage(notCleanedMessage: String): String {
+    private fun washTheMessage(notCleanedMessage: String): String {
         var cleanMessage = ""
-
         notCleanedMessage.forEach { character ->
             cleanMessage += when {
-                DIACRITICS_MAP.containsKey(character) -> DIACRITICS_MAP[character]
-                KEYWORDS_MAP.containsKey(character) -> KEYWORDS_MAP[character]
+                diacriticsMap.containsKey(character) -> diacriticsMap[character]
+                keywordsMap.containsKey(character) -> keywordsMap[character]
 
                 character in 'A'..'Z' || character in 'a'..'z' -> character.uppercaseChar()
 
@@ -147,17 +153,17 @@ class FirstSolution() : Solver() {
         return cleanMessage
     }
 
-    fun unwashTheMessage(notCleanedMessage: String): String {
+    private fun unwashTheMessage(notCleanedMessage: String): String {
         var cleanMessage = notCleanedMessage
 
-        KEYWORDS_MAP.forEach { set ->
+        keywordsMap.forEach { set ->
             cleanMessage = cleanMessage.replace(set.value, set.key.toString())
         }
 
         return cleanMessage
     }
 
-    fun sliceTheCode(orig: String): String {
+    private fun sliceTheCode(orig: String): String {
         return orig.chunked(5).joinToString(" ")
     }
 
