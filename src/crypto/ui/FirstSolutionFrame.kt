@@ -89,10 +89,10 @@ class FirstSolutionFrame : JFrame() {
             val keyA = keyAField.text.toIntOrNull()
             val keyB = keyBField.text.toIntOrNull()
 
-            if (keyA == null) {
+            if (keyA == null || keyB == null) {
+                JOptionPane.showMessageDialog(this, "Klíče musí být čísla")
+            } else if (!cipherBackend.validateKeyA(keyA)) {
                 JOptionPane.showMessageDialog(this, "Neplatná hodnota klíče A")
-            } else if (keyB == null) {
-                JOptionPane.showMessageDialog(this, "Neplatná hodnota klíče B")
             } else {
                 cipherBackend.setKeyA(keyA)
                 cipherBackend.setKeyB(keyB)
