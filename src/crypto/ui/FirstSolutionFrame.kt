@@ -20,6 +20,8 @@ import javax.swing.JTextArea
 import javax.swing.JTextField
 import javax.swing.SwingConstants
 
+
+
 class FirstSolutionFrame : JFrame() {
     private val alphabetGridLabels = Array(26) { JLabel("", SwingConstants.CENTER) }
 
@@ -29,6 +31,26 @@ class FirstSolutionFrame : JFrame() {
         size = Dimension(1000, 400)
         setLocationRelativeTo(null)
         layout = BorderLayout()
+
+
+        ////////// style //////////
+
+        val colorPackage = AppTheme.dark
+        val gradientFrom = AppTheme.gradientColors[0]
+        val gradientTill = AppTheme.gradientColors[1]
+
+        contentPane.background = colorPackage.bgPrimary
+
+
+        val mainBackground = GradientPanel(
+            startColor = Color(gradientFrom[0], gradientFrom[1], gradientFrom[2]), endColor = Color(
+                gradientTill[0], gradientTill[1], gradientTill[2]
+            ), isVertical = false
+        ).apply {
+            layout = BorderLayout()
+        }
+
+        contentPane = mainBackground
 
         ////////// backend and logic //////////
 
@@ -50,6 +72,7 @@ class FirstSolutionFrame : JFrame() {
             border = BorderFactory.createEmptyBorder(
                 20, 25, 10, 25
             ) // Margins: 20px up down, 25px sides
+            foreground = colorPackage.textPrimary
         }
 
         // left text field
@@ -137,12 +160,15 @@ class FirstSolutionFrame : JFrame() {
 
         val headerPanel = JPanel(BorderLayout()).apply {
             border = BorderFactory.createEmptyBorder(15, 25, 10, 25)
+            isOpaque = false
+
             add(backBtn, BorderLayout.WEST)
             add(headerLabel, BorderLayout.CENTER)
         }
 
         val middleControlsPanel = JPanel().apply {
             layout = BoxLayout(this, BoxLayout.Y_AXIS)
+            isOpaque = false
 
             // vertical component arrangement
             add(Box.createVerticalGlue())
@@ -160,6 +186,7 @@ class FirstSolutionFrame : JFrame() {
             border = BorderFactory.createEmptyBorder(
                 10, 25, 20, 25
             )
+            isOpaque = false
 
             add(inputScrollPane)
             add(middleControlsPanel)
@@ -167,22 +194,34 @@ class FirstSolutionFrame : JFrame() {
         }
 
         val alphabetPanel = JPanel(GridLayout(2, 26, 2, 2)).apply {
-            border = BorderFactory.createCompoundBorder(
-                BorderFactory.createEmptyBorder(0, 25, 20, 25), BorderFactory.createTitledBorder("")
-            )
+//            border = BorderFactory.createCompoundBorder(
+//                BorderFactory.createEmptyBorder(0, 25, 1, 25), BorderFactory.createTitledBorder("")
+//            )
+            background = colorPackage.bgSecondary
+
 
             for (ch in 'A'..'Z') {
                 add(JLabel(ch.toString(), SwingConstants.CENTER).apply {
                     font = font.deriveFont(Font.BOLD, 24f)
+                    background = colorPackage.textPrimary
+                    foreground = colorPackage.textPrimary
                 })
             }
 
             for (label in alphabetGridLabels) {
                 add(label.apply {
                     font = font.deriveFont(Font.BOLD, 24f)
-                    foreground = Color(0, 102, 204)
+                    foreground = colorPackage.textMuted
+
                 })
             }
+        }
+
+        val footerPanel = JPanel(BorderLayout()).apply {
+            border = BorderFactory.createEmptyBorder(0, 25, 20, 25)
+            isOpaque = false
+
+            add(alphabetPanel, BorderLayout.CENTER)
         }
 
 
@@ -190,7 +229,7 @@ class FirstSolutionFrame : JFrame() {
 
         add(headerPanel, BorderLayout.NORTH)
         add(centerPanel, BorderLayout.CENTER)
-        add(alphabetPanel, BorderLayout.SOUTH)
+        add(footerPanel, BorderLayout.SOUTH)
 
         updateAlphabetGrid()
     }

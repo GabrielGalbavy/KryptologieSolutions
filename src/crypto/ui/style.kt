@@ -24,4 +24,6 @@ object AppTheme : ThemeModel() {
     override val dark = ColorPaletteDark()
     override val fontTitle = Font("SansSerif", Font.BOLD, 22)
     override val fontBody = Font("SansSerif", Font.PLAIN, 14)
+
+    val gradientColors = arrayOf(intArrayOf(80, 8, 100), intArrayOf(20, 50, 100))
 }
