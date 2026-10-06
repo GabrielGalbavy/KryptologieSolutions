@@ -2,6 +2,7 @@
 
 import crypto.algorithms.FirstSolution
 import java.awt.BorderLayout
+import java.awt.Color
 import java.awt.Dimension
 import java.awt.Font
 import java.awt.GridLayout
@@ -20,6 +21,9 @@ import javax.swing.JTextField
 import javax.swing.SwingConstants
 
 class FirstSolutionFrame : JFrame() {
+    private val alphabetGridLabels = Array(26) { JLabel("", SwingConstants.CENTER) }
+
+
     init {
 
         defaultCloseOperation = DISPOSE_ON_CLOSE
@@ -31,6 +35,13 @@ class FirstSolutionFrame : JFrame() {
 
         val cipherBackend = FirstSolution()
 
+        fun updateAlphabetGrid() {
+            for (i in 0..<26) {
+                val originalChar = ('A' + i).toString()
+                val encryptedChar = cipherBackend.encrypt(originalChar)
+                alphabetGridLabels[i].text = encryptedChar.trim()
+            }
+        }
 
         ////////// components //////////
 
@@ -63,12 +74,13 @@ class FirstSolutionFrame : JFrame() {
         }
 
         // center field
-        val keyAField = JTextField("1").apply {
+        val keyAField = JTextField("").apply {
+
             maximumSize = Dimension(200, 30)
             alignmentX = CENTER_ALIGNMENT
             border = BorderFactory.createTitledBorder("Key A")
         }
-        val keyBField = JTextField("0").apply {
+        val keyBField = JTextField("").apply {
             maximumSize = Dimension(200, 30)
             alignmentX = CENTER_ALIGNMENT
             border = BorderFactory.createTitledBorder("Key B")
@@ -97,6 +109,8 @@ class FirstSolutionFrame : JFrame() {
                 cipherBackend.setKeyA(keyA)
                 cipherBackend.setKeyB(keyB)
 
+                updateAlphabetGrid()
+
                 val mode = modeComboBox.selectedItem as String
 
                 when (mode) {
@@ -111,8 +125,22 @@ class FirstSolutionFrame : JFrame() {
             }
         }
 
+        val backBtn = JButton("Menu").apply {
+            addActionListener {
+                val welcomeFrame = WelcomeFrame()
+                welcomeFrame.isVisible = true
+                dispose()
+            }
+        }
+
 
         ////////// panels //////////
+
+        val headerPanel = JPanel(BorderLayout()).apply {
+            border = BorderFactory.createEmptyBorder(15, 25, 10, 25)
+            add(backBtn, BorderLayout.WEST)
+            add(headerLabel, BorderLayout.CENTER)
+        }
 
         val middleControlsPanel = JPanel().apply {
             layout = BoxLayout(this, BoxLayout.Y_AXIS)
@@ -139,12 +167,32 @@ class FirstSolutionFrame : JFrame() {
             add(outputScrollPane)
         }
 
+        val alphabetPanel = JPanel(GridLayout(2, 26, 2, 2)).apply {
+            border = BorderFactory.createCompoundBorder(
+                BorderFactory.createEmptyBorder(0, 25, 20, 25), BorderFactory.createTitledBorder("")
+            )
+
+            for (ch in 'A'..'Z') {
+                add(JLabel(ch.toString(), SwingConstants.CENTER).apply {
+                    font = font.deriveFont(Font.BOLD, 24f)
+                })
+            }
+
+            for (label in alphabetGridLabels) {
+                add(label.apply {
+                    font = font.deriveFont(Font.BOLD, 24f)
+                    foreground = Color(0, 102, 204)
+                })
+            }
+        }
+
 
         ////////// implementation //////////
 
-        add(headerLabel, BorderLayout.NORTH)
-
+        add(headerPanel, BorderLayout.NORTH)
         add(centerPanel, BorderLayout.CENTER)
-    }
+        add(alphabetPanel, BorderLayout.SOUTH)
 
+        updateAlphabetGrid()
+    }
 }
