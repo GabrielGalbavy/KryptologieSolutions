@@ -23,7 +23,6 @@ import javax.swing.SwingConstants
 class FirstSolutionFrame : JFrame() {
     private val alphabetGridLabels = Array(26) { JLabel("", SwingConstants.CENTER) }
 
-
     init {
 
         defaultCloseOperation = DISPOSE_ON_CLOSE

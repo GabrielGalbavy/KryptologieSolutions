@@ -5,6 +5,9 @@ import java.awt.*
 import javax.swing.*
 
 class WelcomeFrame() : JFrame("Crypto Solver") {
+
+    val colorPackage = AppTheme.dark
+
     init {
         defaultCloseOperation = EXIT_ON_CLOSE
         size = Dimension(400, 300) // in px
@@ -16,13 +19,9 @@ class WelcomeFrame() : JFrame("Crypto Solver") {
         // header label
         val headerLabel = JLabel("Welcome to Crypto Solver", SwingConstants.CENTER).apply {
             font = font.deriveFont(Font.BOLD, 20f)
-            border = BorderFactory
-                .createEmptyBorder(
-                    20,
-                    0,
-                    10,
-                    0
-                ) // Margins: 20px up, 10px down
+            border = BorderFactory.createEmptyBorder(
+                20, 0, 10, 0
+            ) // Margins: 20px up, 10px down
         }
 
         // select menu
@@ -53,8 +52,7 @@ class WelcomeFrame() : JFrame("Crypto Solver") {
                 }
 
                 else -> JOptionPane.showMessageDialog(
-                    this,
-                    "Pre túto šifru zatiaľ neexistuje UI."
+                    this, "Pre túto šifru zatiaľ neexistuje UI."
                 )
             }
         }
