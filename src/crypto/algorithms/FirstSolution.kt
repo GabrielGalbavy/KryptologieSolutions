@@ -71,8 +71,10 @@ class FirstSolution : Solver() {
     )
 
 
-    private var keyA: Int = 1
-    private var keyB: Int = 0
+    var keyA: Int = 1
+        private set
+    var keyB: Int = 0
+        private set
 
 
     //////// cipher functions ////////
