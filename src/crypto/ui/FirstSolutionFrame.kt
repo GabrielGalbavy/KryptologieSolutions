@@ -19,6 +19,7 @@ import javax.swing.JScrollPane
 import javax.swing.JTextArea
 import javax.swing.JTextField
 import javax.swing.SwingConstants
+import javax.swing.border.TitledBorder
 
 
 class FirstSolutionFrame : JFrame() {
@@ -44,7 +45,7 @@ class FirstSolutionFrame : JFrame() {
         val mainBackground = GradientPanel(
             startColor = Color(gradientFrom[0], gradientFrom[1], gradientFrom[2]), endColor = Color(
                 gradientTill[0], gradientTill[1], gradientTill[2]
-            ), isVertical = false
+            ), isVertical = true
         ).apply {
             layout = BorderLayout()
         }
@@ -67,10 +68,10 @@ class FirstSolutionFrame : JFrame() {
 
         // header label
         val headerLabel = JLabel("Afinní šifra", SwingConstants.LEFT).apply {
-            font = font.deriveFont(Font.BOLD, 22f)
+            font = font.deriveFont(Font.BOLD, 26f)
             border = BorderFactory.createEmptyBorder(
                 20, 25, 10, 25
-            ) // Margins: 20px up down, 25px sides
+            )
             foreground = colorPackage.textPrimary
         }
 
@@ -78,14 +79,25 @@ class FirstSolutionFrame : JFrame() {
         val inputTextArea = JTextArea().apply {
             lineWrap = true // auto text folding
             wrapStyleWord = true // won't slice words in half
+            isOpaque = false
 
-            background = colorPackage.bgSecondary
             foreground = colorPackage.textPrimary
             font = font.deriveFont(Font.PLAIN, 16f)
         }
-        val inputScrollPane = JScrollPane(inputTextArea).apply {
-            border = BorderFactory.createTitledBorder("Input text")
 
+        val messagesLineBorder = BorderFactory.createLineBorder(colorPackage.border, 3)
+        val inputScrollPane = JScrollPane(inputTextArea).apply {
+            isOpaque = false
+            viewport.isOpaque = false
+
+            border = BorderFactory.createTitledBorder(
+                messagesLineBorder,
+                " Input text ",
+                TitledBorder.CENTER,
+                TitledBorder.TOP,
+                font.deriveFont(Font.BOLD, 18f),
+                colorPackage.textPrimary
+            )
         }
 
         // right text field
@@ -93,32 +105,72 @@ class FirstSolutionFrame : JFrame() {
             lineWrap = true // auto text folding
             wrapStyleWord = true // won't slice words in half
             isEditable = false
+            isOpaque = false
 
-            background = colorPackage.bgSecondary
             foreground = colorPackage.textSecondary
             font = font.deriveFont(Font.BOLD, 16f)
-
         }
         val outputScrollPane = JScrollPane(outputTextArea).apply {
-            border = BorderFactory.createTitledBorder("Output")
+            isOpaque = false
+            viewport.isOpaque = false
+
+            border = BorderFactory.createTitledBorder(
+                messagesLineBorder,
+                " Output text ",
+                TitledBorder.CENTER,
+                TitledBorder.TOP,
+                font.deriveFont(Font.BOLD, 18f),
+                colorPackage.textPrimary
+            )
         }
+
 
         // center field
-        val keyAField = JTextField("").apply {
+        val keysLineBorder = BorderFactory.createLineBorder(colorPackage.border, 2)
 
+        val keyAField = JTextField("").apply {
+            horizontalAlignment = JTextField.CENTER
             maximumSize = Dimension(200, 30)
             alignmentX = CENTER_ALIGNMENT
-            border = BorderFactory.createTitledBorder("Key A")
+            isOpaque = false
+            foreground = colorPackage.textSecondary
+            font = font.deriveFont(Font.BOLD, 18f)
+
+            border = BorderFactory.createTitledBorder(
+                keysLineBorder,
+                " Key A ",
+                TitledBorder.CENTER,
+                TitledBorder.TOP,
+                font.deriveFont(Font.BOLD, 18f),
+                colorPackage.textPrimary
+            )
         }
         val keyBField = JTextField("").apply {
+            horizontalAlignment = JTextField.CENTER
             maximumSize = Dimension(200, 30)
             alignmentX = CENTER_ALIGNMENT
-            border = BorderFactory.createTitledBorder("Key B")
+            isOpaque = false
+            foreground = colorPackage.textSecondary
+            font = font.deriveFont(Font.BOLD, 18f)
+
+            border = BorderFactory.createTitledBorder(
+                keysLineBorder,
+                " Key B ",
+                TitledBorder.CENTER,
+                TitledBorder.TOP,
+                font.deriveFont(Font.BOLD, 18f),
+                colorPackage.textPrimary
+            )
         }
 
         val modeComboBox = JComboBox(arrayOf("Encrypt", "Decrypt")).apply {
             maximumSize = Dimension(200, 30)
             alignmentX = CENTER_ALIGNMENT
+
+            background = colorPackage.bgSecondary
+            foreground = colorPackage.textPrimary
+
+            font = AppTheme.fontBody.deriveFont(Font.BOLD, 16f)
         }
 
         val keysInUse = JLabel(" ").apply {
@@ -131,13 +183,19 @@ class FirstSolutionFrame : JFrame() {
             isOpaque = false
         }
 
-        val runBtn = JButton("Run").apply {
+        val runBtn = JButton(">> Run >>").apply {
             alignmentX = CENTER_ALIGNMENT
             preferredSize = Dimension(120, 35)
             maximumSize = Dimension(200, 35)
+
+            font = font.deriveFont(Font.BOLD, 18f)
+
+            background = Color(126, 22, 186)
+            foreground = colorPackage.textPrimary
         }
         runBtn.addActionListener {
             val text = inputTextArea.text.toString()
+
             val keyA = keyAField.text.toIntOrNull()
             val keyB = keyBField.text.toIntOrNull()
 
@@ -163,7 +221,7 @@ class FirstSolutionFrame : JFrame() {
                         outputTextArea.text = cipherBackend.decrypt(text)
                     }
                 }
-//
+
 //                keyAField.text = cipherBackend.keyA.toString()
 //                keyBField.text = cipherBackend.keyB.toString()
 
@@ -173,6 +231,10 @@ class FirstSolutionFrame : JFrame() {
 
 
         val backBtn = JButton("Menu").apply {
+            background = colorPackage.accent
+            foreground = colorPackage.textPrimary
+            font = font.deriveFont(Font.BOLD, 16f)
+
             addActionListener {
                 val welcomeFrame = WelcomeFrame()
                 welcomeFrame.isVisible = true

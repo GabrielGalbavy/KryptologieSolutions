@@ -3,9 +3,13 @@
 import crypto.availableSolutions
 import java.awt.*
 import javax.swing.*
+import javax.swing.event.PopupMenuEvent
+import javax.swing.event.PopupMenuListener
 
 class GradientPanel(
-    var startColor: Color = Color(18, 20, 40), var endColor: Color = Color(35, 45, 85), var isVertical: Boolean = true
+    var startColor: Color = Color(18, 20, 40),
+    var endColor: Color = Color(35, 45, 85),
+    var isVertical: Boolean = true
 ) : JPanel() {
 
     override fun paintComponent(g: Graphics) {
@@ -46,7 +50,7 @@ class WelcomeFrame : JFrame("Crypto Solver") {
         val mainBackground = GradientPanel(
             startColor = Color(gradientFrom[0], gradientFrom[1], gradientFrom[2]), endColor = Color(
                 gradientTill[0], gradientTill[1], gradientTill[2]
-            ), isVertical = false
+            ), isVertical = true
         ).apply {
             layout = BorderLayout()
         }
@@ -70,10 +74,23 @@ class WelcomeFrame : JFrame("Crypto Solver") {
             maximumSize = Dimension(250, 30) // width limit
             alignmentX = CENTER_ALIGNMENT
 
-            background = colorPackage.bgInput
-            foreground = colorPackage.textPrimary
-            font = AppTheme.fontBody
+            background = colorPackage.bgSecondary
+            foreground = colorPackage.textSecondary
+
+            font = AppTheme.fontBody.deriveFont(Font.BOLD, 16f)
         }
+        // render fragment fix
+        cipherComboBox.addPopupMenuListener(object : PopupMenuListener {
+            override fun popupMenuWillBecomeVisible(e: PopupMenuEvent?) {}
+
+            override fun popupMenuWillBecomeInvisible(e: PopupMenuEvent?) {
+                mainBackground.repaint()
+            }
+
+            override fun popupMenuCanceled(e: PopupMenuEvent?) {
+                mainBackground.repaint()
+            }
+        })
 
         // start button
         val startBtn = JButton("Start").apply {
@@ -81,12 +98,10 @@ class WelcomeFrame : JFrame("Crypto Solver") {
             alignmentX = CENTER_ALIGNMENT
 
             background = colorPackage.accent
-            foreground = Color.WHITE
-            font = AppTheme.fontBody.deriveFont(Font.BOLD)
+            foreground = colorPackage.textPrimary
+            font = AppTheme.fontBody.deriveFont(Font.BOLD, 18f)
             isFocusPainted = false
-
         }
-        // button event listener
         startBtn.addActionListener {
             val selectedIndex = cipherComboBox.selectedIndex
             when (selectedIndex) {
@@ -96,16 +111,24 @@ class WelcomeFrame : JFrame("Crypto Solver") {
                     solutionFrame.isVisible = true
                 }
 
-                1 -> {
-                    val solutionFrame = SecondSolutionFrame()
-                    dispose()
-                    solutionFrame.isVisible = true
-                }
+//                1 -> {
+//                    val solutionFrame = SecondSolutionFrame()
+//                    dispose()
+//                    solutionFrame.isVisible = true
+//                } ....
 
                 else -> JOptionPane.showMessageDialog(
-                    this, "Pre túto šifru zatiaľ neexistuje UI."
+                    this, "No backend found for selected cipher. :("
                 )
             }
+        }
+
+        val footerLabel = JLabel("Developed at Antonínova U6 | UTB Zlín", SwingConstants.CENTER).apply {
+            foreground = colorPackage.textSecondary
+            font = font.deriveFont(14f)
+            border = BorderFactory.createEmptyBorder(
+                40, 0, 5, 0
+            ) // Margins: 20px up, 10px down
         }
 
 
@@ -125,7 +148,7 @@ class WelcomeFrame : JFrame("Crypto Solver") {
         ////////// implementation //////////
 
         add(headerLabel, BorderLayout.NORTH)
-
         add(centerPanel, BorderLayout.CENTER)
+        add(footerLabel, BorderLayout.SOUTH)
     }
 }
