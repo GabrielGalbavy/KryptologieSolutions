@@ -2,6 +2,8 @@
 
 A modular, dark-themed desktop application built with **Kotlin** and **Java Swing** for solving, visualizing, and analyzing classical cryptographic algorithms.
 
+> For classmates: please do not steal 🙏🥀
+
 ![Kotlin](https://img.shields.io/badge/Kotlin-1.9+-7F52FF?style=flat&logo=kotlin&logoColor=white)
 ![Swing](https://img.shields.io/badge/UI-Java%20Swing-orange?style=flat)
 ![License](https://img.shields.io/badge/License-MIT-blue.svg)
