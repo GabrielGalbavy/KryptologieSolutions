@@ -10,6 +10,7 @@ data class ColorPaletteDark(
     override val bgSecondary: Color = Color(28, 32, 60),
     override val bgInput: Color = Color(35, 40, 75),
     override val textPrimary: Color = Color(212, 230, 230),
+    override val textSecondary: Color = Color(50, 100, 200),
     override val textMuted: Color = Color(130, 145, 175),
     override val accent: Color = Color(0, 150, 255),
     override val border: Color = Color(45, 52, 90)

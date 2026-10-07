@@ -12,13 +12,11 @@ class GradientPanel(
         super.paintComponent(g)
         val g2d = g as Graphics2D
 
-        // Zapnutie vyhladzovania pre kvalitnejší render
         g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY)
 
         val x2 = if (isVertical) 0f else width.toFloat()
         val y2 = if (isVertical) height.toFloat() else 0f
 
-        // Vytvorenie prechodu od (0,0) po koniec panela
         val gradient = GradientPaint(0f, 0f, startColor, x2, y2, endColor)
 
         g2d.paint = gradient
@@ -26,7 +24,7 @@ class GradientPanel(
     }
 }
 
-class WelcomeFrame() : JFrame("Crypto Solver") {
+class WelcomeFrame : JFrame("Crypto Solver") {
 
 
     init {

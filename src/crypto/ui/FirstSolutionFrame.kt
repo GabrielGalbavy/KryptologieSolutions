@@ -21,14 +21,13 @@ import javax.swing.JTextField
 import javax.swing.SwingConstants
 
 
-
 class FirstSolutionFrame : JFrame() {
     private val alphabetGridLabels = Array(26) { JLabel("", SwingConstants.CENTER) }
 
     init {
 
         defaultCloseOperation = DISPOSE_ON_CLOSE
-        size = Dimension(1000, 400)
+        size = Dimension(1200, 550)
         setLocationRelativeTo(null)
         layout = BorderLayout()
 
@@ -79,9 +78,14 @@ class FirstSolutionFrame : JFrame() {
         val inputTextArea = JTextArea().apply {
             lineWrap = true // auto text folding
             wrapStyleWord = true // won't slice words in half
+
+            background = colorPackage.bgSecondary
+            foreground = colorPackage.textPrimary
+            font = font.deriveFont(Font.PLAIN, 16f)
         }
         val inputScrollPane = JScrollPane(inputTextArea).apply {
-            border = BorderFactory.createTitledBorder("Input")
+            border = BorderFactory.createTitledBorder("Input text")
+
         }
 
         // right text field
@@ -89,6 +93,10 @@ class FirstSolutionFrame : JFrame() {
             lineWrap = true // auto text folding
             wrapStyleWord = true // won't slice words in half
             isEditable = false
+
+            background = colorPackage.bgSecondary
+            foreground = colorPackage.textSecondary
+            font = font.deriveFont(Font.BOLD, 16f)
 
         }
         val outputScrollPane = JScrollPane(outputTextArea).apply {
@@ -113,6 +121,16 @@ class FirstSolutionFrame : JFrame() {
             alignmentX = CENTER_ALIGNMENT
         }
 
+        val keysInUse = JLabel(" ").apply {
+            alignmentX = CENTER_ALIGNMENT
+            font = font.deriveFont(Font.BOLD, 12f)
+            border = BorderFactory.createEmptyBorder(
+                20, 25, 10, 25
+            ) // Margins: 20px up down, 25px sides
+            foreground = colorPackage.textSecondary
+            isOpaque = false
+        }
+
         val runBtn = JButton("Run").apply {
             alignmentX = CENTER_ALIGNMENT
             preferredSize = Dimension(120, 35)
@@ -131,6 +149,7 @@ class FirstSolutionFrame : JFrame() {
                 cipherBackend.setKeyA(keyA)
                 cipherBackend.setKeyB(keyB)
 
+
                 updateAlphabetGrid()
 
                 val mode = modeComboBox.selectedItem as String
@@ -144,8 +163,14 @@ class FirstSolutionFrame : JFrame() {
                         outputTextArea.text = cipherBackend.decrypt(text)
                     }
                 }
+//
+//                keyAField.text = cipherBackend.keyA.toString()
+//                keyBField.text = cipherBackend.keyB.toString()
+
+                keysInUse.text = "Key A: ${cipherBackend.keyA} | Key B: ${cipherBackend.keyB}"
             }
         }
+
 
         val backBtn = JButton("Menu").apply {
             addActionListener {
@@ -179,6 +204,8 @@ class FirstSolutionFrame : JFrame() {
             add(modeComboBox)
             add(Box.createRigidArea(Dimension(0, 15)))
             add(runBtn)
+            add(Box.createRigidArea(Dimension(0, 10)))
+            add(keysInUse)
             add(Box.createVerticalGlue())
         }
 
