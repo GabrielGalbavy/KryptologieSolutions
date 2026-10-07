@@ -163,7 +163,7 @@ class FirstSolutionFrame : JFrame() {
             )
         }
 
-        val modeComboBox = JComboBox(arrayOf("Encrypt", "Decrypt")).apply {
+        val modeComboBox = JComboBox(arrayOf("Encrypt", "Decrypt", "Filter")).apply {
             maximumSize = Dimension(200, 30)
             alignmentX = CENTER_ALIGNMENT
 
@@ -175,7 +175,7 @@ class FirstSolutionFrame : JFrame() {
 
         val keysInUse = JLabel(" ").apply {
             alignmentX = CENTER_ALIGNMENT
-            font = font.deriveFont(Font.BOLD, 12f)
+            font = font.deriveFont(Font.BOLD, 14f)
             border = BorderFactory.createEmptyBorder(
                 20, 25, 10, 25
             ) // Margins: 20px up down, 25px sides
@@ -196,36 +196,39 @@ class FirstSolutionFrame : JFrame() {
         runBtn.addActionListener {
             val text = inputTextArea.text.toString()
 
-            val keyA = keyAField.text.toIntOrNull()
-            val keyB = keyBField.text.toIntOrNull()
 
-            if (keyA == null || keyB == null) {
-                JOptionPane.showMessageDialog(this, "Klíče musí být čísla")
-            } else if (!cipherBackend.validateKeyA(keyA)) {
-                JOptionPane.showMessageDialog(this, "Neplatná hodnota klíče A")
-            } else {
-                cipherBackend.setKeyA(keyA)
-                cipherBackend.setKeyB(keyB)
+            val mode = modeComboBox.selectedItem as String
 
+            if (mode != "Filter") {
+                val keyA = keyAField.text.toIntOrNull()
+                val keyB = keyBField.text.toIntOrNull()
 
-                updateAlphabetGrid()
+                if (keyA == null || keyB == null) {
+                    JOptionPane.showMessageDialog(this, "Klíče musí být čísla")
+                } else if (!cipherBackend.validateKeyA(keyA)) {
+                    JOptionPane.showMessageDialog(this, "Neplatná hodnota klíče A")
+                } else {
+                    cipherBackend.setKeyA(keyA)
+                    cipherBackend.setKeyB(keyB)
+                    updateAlphabetGrid()
 
-                val mode = modeComboBox.selectedItem as String
+                    when (mode) {
+                        "Encrypt" -> {
+                            outputTextArea.text = cipherBackend.encrypt(text)
+                        }
 
-                when (mode) {
-                    "Encrypt" -> {
-                        outputTextArea.text = cipherBackend.encrypt(text)
+                        "Decrypt" -> {
+                            outputTextArea.text = cipherBackend.decrypt(text)
+                        }
                     }
-
-                    "Decrypt" -> {
-                        outputTextArea.text = cipherBackend.decrypt(text)
-                    }
-                }
 
 //                keyAField.text = cipherBackend.keyA.toString()
 //                keyBField.text = cipherBackend.keyB.toString()
 
-                keysInUse.text = "Key A: ${cipherBackend.keyA} | Key B: ${cipherBackend.keyB}"
+                    keysInUse.text = "Key A: ${cipherBackend.keyA} | Key B: ${cipherBackend.keyB}"
+                }
+            } else {
+                outputTextArea.text = cipherBackend.filter(text)
             }
         }
 

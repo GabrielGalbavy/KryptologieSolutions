@@ -1,6 +1,7 @@
 ﻿package crypto.algorithms
 
 import crypto.models.Solver
+import jdk.internal.joptsimple.internal.Messages.message
 
 
 class FirstSolution : Solver() {
@@ -108,6 +109,9 @@ class FirstSolution : Solver() {
         return unwashTheMessage(message.joinToString(""))
     }
 
+    fun filter(input: String): String {
+        return washTheMessage(input)
+    }
 
     //////// Key-related functions ////////
 
@@ -115,9 +119,7 @@ class FirstSolution : Solver() {
         return validateKeyA(key).also { isValid ->
             if (isValid) {
                 this.keyA = (key % 26 + 26) % 26
-                println("Key A: " + this.keyA)
             } else {
-                println("KEY A INVALID, setting to 1")
                 this.keyA = 1
             }
         }
@@ -125,7 +127,6 @@ class FirstSolution : Solver() {
 
     fun setKeyB(key: Int): Boolean {
         this.keyB = (key % 26 + 26) % 26
-        println("Key B:" + this.keyB)
         return true
     }
 
