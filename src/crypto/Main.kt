@@ -1,23 +1,17 @@
 package crypto
 
-import crypto.algorithms.FirstSolution
+import crypto.ui.WelcomeFrame
+import javax.swing.SwingUtilities
 
-val WORKING_ALGORITHMS = arrayOf("test", "test_two")
+val availableSolutions = arrayOf(
+    "Afinní šifra",
+    "test two",
+    "test three"
+)
 
-// This is where the fun begins
 fun main() {
-    /*
     SwingUtilities.invokeLater {
-        val frame = MainFrame()
-        frame.btnProcess.addActionListener {
-            val text = frame.inputField.text
-            frame.outputField.text = text
-        }
-
-        frame.isVisible = true
+        val window = WelcomeFrame()
+        window.isVisible = true
     }
-    */
-    println("Solve for One:")
-    val firstSolver = FirstSolution()
-    println((firstSolver.washTheMessage("toto je moja sprava @%*^(#$%*(@)_^# !@ %@ %$ %@$ FGSDG 4231F")))
 }

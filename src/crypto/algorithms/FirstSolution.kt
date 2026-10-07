@@ -1,52 +1,61 @@
 ﻿package crypto.algorithms
 
-import java.math.BigInteger
+import crypto.models.Solver
+import jdk.internal.joptsimple.internal.Messages.message
 
 
-class FirstSolution() : Solver() {
+class FirstSolution : Solver() {
+    override val name: String = "Afinní šifra - 1. ukol"
 
-    private val DIACRITICS_MAP = mapOf(
+    override fun whoAmI(): String { // possibly pointless
+        return name
+    }
+
+
+    //////// variables ////////
+
+    private val diacriticsMap = mapOf(
         'á' to 'A',
         'ä' to 'A',
-        'č' to 'C',
-        'ď' to 'D',
-        'é' to 'E',
-        'ě' to 'E',
-        'í' to 'I',
-        'ĺ' to 'L',
-        'ľ' to 'L',
-        'ň' to 'N',
-        'ó' to 'O',
-        'ô' to 'O',
-        'ŕ' to 'R',
-        'š' to 'S',
-        'ť' to 'T',
-        'ú' to 'U',
-        'ů' to 'U',
-        'ý' to 'Y',
-        'ž' to 'Z',
         'Á' to 'A',
         'Ä' to 'A',
+        'č' to 'C',
         'Č' to 'C',
+        'ď' to 'D',
         'Ď' to 'D',
+        'é' to 'E',
+        'ě' to 'E',
         'É' to 'E',
         'Ě' to 'E',
+        'í' to 'I',
         'Í' to 'I',
+        'ĺ' to 'L',
         'Ĺ' to 'L',
+        'ľ' to 'L',
         'Ľ' to 'L',
+        'ň' to 'N',
         'Ň' to 'N',
+        'ó' to 'O',
+        'ô' to 'O',
         'Ó' to 'O',
         'Ô' to 'O',
+        'ŕ' to 'R',
         'Ŕ' to 'R',
+        'š' to 'S',
         'Š' to 'S',
+        'ť' to 'T',
         'Ť' to 'T',
+        'ú' to 'U',
+        'ů' to 'U',
         'Ú' to 'U',
         'Ů' to 'U',
+        'ý' to 'Y',
         'Ý' to 'Y',
+        'ž' to 'Z',
         'Ž' to 'Z'
     )
-
-    private val NUMERIC_MAP = mapOf(
+    private val keywordsMap = mutableMapOf(
+        // must have 1:1 key-value relation for decryption
         '0' to "XNULAX",
         '1' to "XJEDNAX",
         '2' to "XDVAX",
@@ -56,47 +65,88 @@ class FirstSolution() : Solver() {
         '6' to "XSESTX",
         '7' to "XSEDEMX",
         '8' to "XOSEMX",
-        '9' to "XDEVATX"
-    )
+        '9' to "XDEVATX",
 
-    private val SPECIAL_MAP = mapOf(
         ' ' to "XMEZERAX",
+        '-' to "XCARKAX",
     )
 
-    override fun whoAmI(): String {
-        return "FirstSolution"
+
+    var keyA: Int = 1
+        private set
+    var keyB: Int = 0
+        private set
+
+
+    //////// cipher functions ////////
+
+    override fun encrypt(input: String): String {
+        var output = ""
+        val cleanInput = washTheMessage(input)
+
+        cleanInput.forEach { character ->
+            val charIndex = character - 'A'
+            output += 'A' + (keyA * charIndex + keyB) % 26
+        }
+        return sliceTheCode(output)
     }
 
-    fun encrypt(input: String, keyA: Int, keyB: Int): String? {
+    override fun decrypt(input: String): String {
+        val gibberish = input.replace(" ", "") // unite the code blocks
+        val message: MutableList<Char> = mutableListOf()
+        val aInverse = modInverse(keyA)
 
-        if (validateKeyA(keyA).not()) {
-            return null
+        gibberish.forEach { character ->
+            val charIndex = character.uppercaseChar() - 'A'
+
+            // D(y) = aInverse * (y - keyB) mod 26
+            val rawIndex = (aInverse * (charIndex - keyB)) % 26
+            val validIndex = (rawIndex + 26) % 26
+
+            message += 'A' + validIndex
         }
 
-        return "input"
+        return unwashTheMessage(message.joinToString(""))
     }
 
-    fun decrypt(input: String): String {
-        return "say something else"
+    fun filter(input: String): String {
+        return washTheMessage(input)
+    }
+
+    //////// Key-related functions ////////
+
+    fun setKeyA(key: Int): Boolean {
+        return validateKeyA(key).also { isValid ->
+            if (isValid) {
+                this.keyA = (key % 26 + 26) % 26
+            } else {
+                this.keyA = 1
+            }
+        }
+    }
+
+    fun setKeyB(key: Int): Boolean {
+        this.keyB = (key % 26 + 26) % 26
+        return true
     }
 
     fun validateKeyA(a: Int): Boolean {
-        // "číslo a musí být nesoudělné s číslem 26." this
-        return a % 2 != 0 && a % 13 != 0
+        val normalizedA = (a % 26 + 26) % 26
+        return normalizedA != 0 && gcd(normalizedA, 26) == 1
     }
 
-    fun washTheMessage(dirtyMessage: String): String {
+    private fun gcd(a: Int, b: Int): Int = if (b == 0) a else gcd(b, a % b)
+
+
+    //////// other functions ////////
+
+    private fun washTheMessage(notCleanedMessage: String): String {
         var cleanMessage = ""
-
-        dirtyMessage.forEach { character ->
+        notCleanedMessage.forEach { character ->
             cleanMessage += when {
+                diacriticsMap.containsKey(character) -> diacriticsMap[character]
+                keywordsMap.containsKey(character) -> keywordsMap[character]
 
-                // check for mapped chars
-                DIACRITICS_MAP.containsKey(character) -> DIACRITICS_MAP[character]
-                NUMERIC_MAP.containsKey(character) -> NUMERIC_MAP[character]
-                SPECIAL_MAP.containsKey(character) -> SPECIAL_MAP[character]
-
-                // remaining chars to upper case
                 character in 'A'..'Z' || character in 'a'..'z' -> character.uppercaseChar()
 
                 // drop anything else
@@ -105,6 +155,25 @@ class FirstSolution() : Solver() {
         }
         return cleanMessage
     }
+
+    private fun unwashTheMessage(notCleanedMessage: String): String {
+        var cleanMessage = notCleanedMessage
+
+        keywordsMap.forEach { set ->
+            cleanMessage = cleanMessage.replace(set.value, set.key.toString())
+        }
+        return cleanMessage
+    }
+
+    private fun sliceTheCode(orig: String): String {
+        return orig.chunked(5).joinToString(" ")
+    }
+
+    private fun modInverse(keyA: Int, m: Int = 26): Int {
+        val normA = (keyA % m + m) % m
+        for (x in 1..<m) {
+            if ((normA * x) % m == 1) return x
+        }
+        return 1
+    }
 }
-
-
