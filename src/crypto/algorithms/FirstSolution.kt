@@ -96,7 +96,7 @@ class FirstSolution : Solver() {
         val aInverse = modInverse(keyA)
 
         gibberish.forEach { character ->
-            val charIndex = character - 'A'
+            val charIndex = character.uppercaseChar() - 'A'
 
             // D(y) = aInverse * (y - keyB) mod 26
             val rawIndex = (aInverse * (charIndex - keyB)) % 26
