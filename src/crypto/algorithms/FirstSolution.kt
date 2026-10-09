@@ -5,7 +5,7 @@ import jdk.internal.joptsimple.internal.Messages.message
 
 
 class FirstSolution : Solver() {
-    override val name: String = "Afinní šifra - 1. ukol"
+    override val name: String = "Afinní šifra"
 
     override fun whoAmI(): String { // possibly pointless
         return name

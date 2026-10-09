@@ -1,6 +1,6 @@
 ﻿package crypto.ui
 
-import crypto.availableSolutions
+import crypto.availableCiphers
 import java.awt.*
 import javax.swing.*
 import javax.swing.event.PopupMenuEvent
@@ -69,7 +69,7 @@ class WelcomeFrame : JFrame("Crypto Solver") {
         }
 
         // select menu
-        val cipherOptions = availableSolutions
+        val cipherOptions = availableCiphers
         val cipherComboBox = JComboBox(cipherOptions).apply {
             maximumSize = Dimension(250, 30) // width limit
             alignmentX = CENTER_ALIGNMENT
