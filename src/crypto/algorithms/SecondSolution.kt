@@ -2,6 +2,7 @@
 
 import crypto.models.Solver
 
+
 class SecondSolution : Solver() {
     override val name = "Playfair šifra"
     override fun whoAmI(): String {
@@ -68,31 +69,33 @@ class SecondSolution : Solver() {
 
     private fun normaliseKey(inputKey: String): String {
         // removes special chars, spaces, diacritics and duplicities
-        var key = ""
+        val key = StringBuilder() // more memory friendly than string + string
 
-        inputKey.replace(" ", "").forEach { ch ->
-            if (ch.isLetter()) {
-                val normChar = when {
-                    diacriticsMap.containsKey(ch) -> diacriticsMap[ch]
+        inputKey.uppercase().forEach { ch ->
+            var normChar = when {
+                diacriticsMap.containsKey(ch) -> diacriticsMap[ch]
+                ch in 'A'..'Z' -> ch
+                else -> null
+            }
 
-                    ch in 'A'..'Z' || ch in 'a'..'z' -> ch.uppercaseChar()
+            if (normChar != null) {
+                normChar = when (tableType) {
+                    Tables.CZ -> {
+                        if (normChar == 'W') 'V' else normChar
+                    }
 
-                    // drop anything else
-                    else -> ""
-                } as Char
-
-                if (!key.contains(normChar)) {
-                    key += normChar
+                    Tables.EN -> {
+                        if (normChar == 'J') 'I' else normChar
+                    }
                 }
+            }
+
+            if (normChar != null && !key.contains(normChar)) {
+                key.append(normChar)
             }
         }
 
-        return if (key.length % 2 != 0) {
-            when (key.last()) {
-                'X' -> key + this.separators[1].toString()
-                else -> key + this.separators[0].toString()
-            }
-        } else key
+        return key.toString()
     }
 
 
