@@ -42,4 +42,43 @@ class SecondSolution : Solver() {
         TODO("Not yet implemented")
     }
 
+
+    //////// Key-related functions ////////
+
+    fun setKey(key: String): Boolean { // returns true in case the key was set
+        val normalizedKey = normaliseKey(key)
+        println(normalizedKey)
+
+        if (normalizedKey.isEmpty()) {
+            return false
+        } else {
+            this.key = normalizedKey
+            return true
+        }
+    }
+
+    private fun normaliseKey(inputKey: String): String {
+        // removes spec. chars, spaces, diacritics and duplicities
+        var key = ""
+
+        inputKey.replace(" ", "").forEach { ch ->
+            // line 67
+            if (ch.isLetter()) {
+                val normChar = when {
+                    diacriticsMap.containsKey(ch) -> diacriticsMap[ch]
+
+                    ch in 'A'..'Z' || ch in 'a'..'z' -> ch.uppercaseChar()
+
+                    // drop anything else
+                    else -> ""
+                } as Char
+
+                if (!key.contains(normChar)) {
+                    key += normChar
+                }
+            }
+        }
+
+        return key
+    }
 }
