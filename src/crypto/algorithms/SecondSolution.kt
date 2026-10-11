@@ -8,8 +8,11 @@ class SecondSolution : Solver() {
         return this.name
     }
 
-
     //////// variables ////////
+
+    enum class Tables {
+        CZ, EN
+    }
 
     val czTable: Array<CharArray> = arrayOf( // dropping W
         charArrayOf('A', 'B', 'C', 'D', 'E'),
@@ -26,10 +29,10 @@ class SecondSolution : Solver() {
         charArrayOf('V', 'W', 'X', 'Y', 'Z')
     )
 
-    val tables = listOf(czTable, enTable)
-
     var key: String = ""
         private set
+
+    val tableType: Tables = Tables.CZ
 
     val separators = charArrayOf('X', 'Q')
 
