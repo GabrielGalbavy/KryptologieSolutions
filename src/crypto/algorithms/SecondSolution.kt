@@ -84,7 +84,12 @@ class SecondSolution : Solver() {
             }
         }
 
-        return key
+        return if (key.length % 2 != 0) {
+            when (key.last()) {
+                'X' -> key + this.separators[1].toString()
+                else -> key + this.separators[0].toString()
+            }
+        } else key
     }
 
 
@@ -110,7 +115,10 @@ class SecondSolution : Solver() {
         }
 
         return if (output.length % 2 != 0) {
-            output + separators[0]
+            when (output.last()) {
+                'X' -> output + this.separators[1].toString()
+                else -> output + this.separators[0].toString()
+            }
         } else output
     }
 }
