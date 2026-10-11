@@ -31,11 +31,17 @@ class SecondSolution : Solver() {
     var key: String = ""
         private set
 
+    val separators = charArrayOf('X', 'Q')
+
 
     //////// cipher functions ////////
 
     override fun encrypt(input: String): String {
-        TODO("Not yet implemented")
+        var output: String = ""
+        var input = addSeparators(washTheMessage(input))
+
+
+        return input
     }
 
     override fun decrypt(input: String): String {
@@ -58,11 +64,10 @@ class SecondSolution : Solver() {
     }
 
     private fun normaliseKey(inputKey: String): String {
-        // removes spec. chars, spaces, diacritics and duplicities
+        // removes special chars, spaces, diacritics and duplicities
         var key = ""
 
         inputKey.replace(" ", "").forEach { ch ->
-            // line 67
             if (ch.isLetter()) {
                 val normChar = when {
                     diacriticsMap.containsKey(ch) -> diacriticsMap[ch]
@@ -80,5 +85,32 @@ class SecondSolution : Solver() {
         }
 
         return key
+    }
+
+
+    //////// other functions ////////
+
+    fun addSeparators(input: String): String {
+        var output: String = ""
+        var previousChar: Char? = null
+
+        input.forEach { ch ->
+            output += if (ch == previousChar) {
+                when (ch) {
+                    this.separators[0] -> this.separators[1].toString() + ch.toString()
+                    this.separators[1] -> this.separators[0].toString() + ch.toString()
+
+                    // use X for any other character
+                    else -> this.separators[0].toString() + ch.toString()
+                }
+            } else {
+                ch.toString()
+            }
+            previousChar = ch
+        }
+
+        return if (output.length % 2 != 0) {
+            output + separators[0]
+        } else output
     }
 }
