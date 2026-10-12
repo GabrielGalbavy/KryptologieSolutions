@@ -41,8 +41,9 @@ class SecondSolution : Solver() {
     //////// cipher functions ////////
 
     override fun encrypt(input: String): String {
-        var output: String = ""
-        var input = addSeparators(washTheMessage(input))
+        val output = StringBuilder()
+        val normInput = addSeparators(washTheMessage(input))
+
 
 
         return input
@@ -126,5 +127,42 @@ class SecondSolution : Solver() {
                 else -> output + this.separators[0].toString()
             }
         } else output
+    }
+
+    fun tableFactory(): Array<CharArray> {
+        var keyImprint = this.key
+        var alphabetIndex = 0
+
+        val matrix = Array(5) { CharArray(5) }
+
+        for (row in matrix) {
+            row.forEachIndexed { i, _ ->
+                if (keyImprint.isNotEmpty()) {
+                    row[i] = keyImprint.first()
+                    keyImprint = keyImprint.drop(1)
+                } else {
+                    while (row[i] == '\u0000') {
+                        val possibleChar = 'A' + alphabetIndex
+                        val currentChar = when (tableType) {
+                            Tables.CZ -> {
+                                if (possibleChar == 'W') 'V' else possibleChar
+                            }
+
+                            Tables.EN -> {
+                                if (possibleChar == 'J') 'I' else possibleChar
+                            }
+                        }
+                        if (!matrix.any { row -> row.contains(currentChar) }) {
+                            row[i] = currentChar
+                            alphabetIndex++
+                        } else {
+                            alphabetIndex++
+                        }
+                    }
+                }
+            }
+        }
+
+        return matrix
     }
 }
