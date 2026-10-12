@@ -154,10 +154,8 @@ class SecondSolution : Solver() {
                         }
                         if (!matrix.any { row -> row.contains(currentChar) }) {
                             row[i] = currentChar
-                            alphabetIndex++
-                        } else {
-                            alphabetIndex++
                         }
+                        alphabetIndex++
                     }
                 }
             }
