@@ -12,28 +12,15 @@ class SecondSolution : Solver() {
     //////// variables ////////
 
     enum class Tables {
-        CZ, EN
+        CZ, // masking W as V
+        EN // masking J as I
     }
-
-    val czTable: Array<CharArray> = arrayOf( // dropping W
-        charArrayOf('A', 'B', 'C', 'D', 'E'),
-        charArrayOf('F', 'G', 'H', 'I', 'J'),
-        charArrayOf('K', 'L', 'M', 'N', 'O'),
-        charArrayOf('P', 'Q', 'R', 'S', 'T'),
-        charArrayOf('U', 'V', 'X', 'Y', 'Z')
-    )
-    val enTable: Array<CharArray> = arrayOf( // dropping J
-        charArrayOf('A', 'B', 'C', 'D', 'E'),
-        charArrayOf('F', 'G', 'H', 'I', 'K'),
-        charArrayOf('L', 'M', 'N', 'O', 'P'),
-        charArrayOf('Q', 'R', 'S', 'T', 'U'),
-        charArrayOf('V', 'W', 'X', 'Y', 'Z')
-    )
 
     var key: String = ""
         private set
 
     val tableType: Tables = Tables.CZ
+    var table: Array<CharArray> = arrayOf(charArrayOf())
 
     val separators = charArrayOf('X', 'Q')
 
@@ -43,7 +30,8 @@ class SecondSolution : Solver() {
     override fun encrypt(input: String): String {
         val output = StringBuilder()
         val normInput = addSeparators(washTheMessage(input))
-        val sessionTable = tableFactory()
+
+        this.table = tableFactory() // generates table with current key applied
 
 
         return input
@@ -132,7 +120,6 @@ class SecondSolution : Solver() {
     fun tableFactory(): Array<CharArray> {
         var keyImprint = this.key
         var alphabetIndex = 0
-
         val matrix = Array(5) { CharArray(5) }
 
         for (row in matrix) {
@@ -143,15 +130,12 @@ class SecondSolution : Solver() {
                 } else {
                     while (row[i] == '\u0000') { // each array char is set to this on init
                         val possibleChar = 'A' + alphabetIndex
-                        val currentChar = when (tableType) {
-                            Tables.CZ -> {
-                                if (possibleChar == 'W') 'V' else possibleChar
-                            }
 
-                            Tables.EN -> {
-                                if (possibleChar == 'J') 'I' else possibleChar
-                            }
+                        val currentChar = when (tableType) {
+                            Tables.CZ -> if (possibleChar == 'W') 'V' else possibleChar
+                            Tables.EN -> if (possibleChar == 'J') 'I' else possibleChar
                         }
+
                         if (!matrix.any { row -> row.contains(currentChar) }) { // prevent duplicates
                             row[i] = currentChar
                         }
