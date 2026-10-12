@@ -43,7 +43,7 @@ class SecondSolution : Solver() {
     override fun encrypt(input: String): String {
         val output = StringBuilder()
         val normInput = addSeparators(washTheMessage(input))
-
+        val sessionTable = tableFactory()
 
 
         return input
@@ -137,11 +137,11 @@ class SecondSolution : Solver() {
 
         for (row in matrix) {
             row.forEachIndexed { i, _ ->
-                if (keyImprint.isNotEmpty()) {
+                if (keyImprint.isNotEmpty()) { // first add the key
                     row[i] = keyImprint.first()
                     keyImprint = keyImprint.drop(1)
                 } else {
-                    while (row[i] == '\u0000') {
+                    while (row[i] == '\u0000') { // each array char is set to this on init
                         val possibleChar = 'A' + alphabetIndex
                         val currentChar = when (tableType) {
                             Tables.CZ -> {
@@ -152,7 +152,7 @@ class SecondSolution : Solver() {
                                 if (possibleChar == 'J') 'I' else possibleChar
                             }
                         }
-                        if (!matrix.any { row -> row.contains(currentChar) }) {
+                        if (!matrix.any { row -> row.contains(currentChar) }) { // prevent duplicates
                             row[i] = currentChar
                         }
                         alphabetIndex++
