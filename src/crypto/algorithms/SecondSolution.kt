@@ -221,4 +221,50 @@ class SecondSolution : Solver() {
         }
         return Pair(Point(row1, col1), Point(row2, col2))
     }
+
+    private fun shiftLetters(pair: Pair<Char, Char>, direction: Int): Pair<Char, Char> {
+        val coords = locateTargets(pair)
+        var outputChars: Pair<Char, Char>
+
+        val directionFix = direction + 5 // Adding 5 so we don't run out of bounds
+
+        when {
+            coords.first.row == coords.second.row -> { // chars share row
+                outputChars = Pair(
+                    this.table[coords.first.row][(coords.first.col + directionFix) % 5],
+                    this.table[coords.second.row][(coords.second.col + directionFix) % 5]
+                )
+            }
+
+            coords.first.col == coords.second.col -> { // chars share column
+                outputChars = Pair(
+                    this.table[(coords.first.row + directionFix) % 5][coords.first.col],
+                    this.table[(coords.second.row + directionFix) % 5][coords.second.col]
+                )
+            }
+
+            else -> { // chars form a sub-table
+                outputChars = Pair(
+                    this.table[coords.first.row][coords.second.col],
+                    this.table[coords.second.row][coords.first.col]
+                )
+            }
+        }
+        return outputChars
+    }
+
+    private fun findSeparators(input: String): String {
+        val regexPattern = Regex("([^XQ])[XQ]\\1")
+        val output = regexPattern.replace(input, "$1$1")
+
+        return output
+    }
+
+    private fun splitToPairs(input: String): List<Pair<Char, Char>> {
+        return input.chunked(2) { chunk ->
+            val first = chunk[0]
+            val second = chunk[1]
+            Pair(first, second)
+        }
+    }
 }
