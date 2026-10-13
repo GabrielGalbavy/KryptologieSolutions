@@ -16,6 +16,8 @@ class SecondSolution : Solver() {
         EN // masking J as I
     }
 
+    data class Point(val row: Int, val col: Int)
+
     var key: String = ""
         private set
 
