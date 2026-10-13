@@ -20,7 +20,7 @@ class SecondSolution : Solver() {
 
     var key: String = ""
         private set
-    val tableType: Tables = Tables.CZ
+    var tableType: Tables = Tables.CZ
     var table: Array<CharArray> = arrayOf(charArrayOf())
     val separators = charArrayOf('X', 'Q')
 
@@ -65,10 +65,10 @@ class SecondSolution : Solver() {
                     )
                 }
             }
-            output.append(outputChars.toString())
+            output.append(outputChars.first).append(outputChars.second).append(' ')
         }
 
-        return output.toString()
+        return output.toString().trim()
     }
 
     override fun decrypt(input: String): String {
@@ -119,6 +119,22 @@ class SecondSolution : Solver() {
         }
 
         return key.toString()
+    }
+
+    fun setTableLanguage(language: String): Boolean { // returns true in case the language was set
+        when (language) {
+            "czech" -> {
+                this.tableType = Tables.CZ
+                return true
+            }
+
+            "english" -> {
+                this.tableType = Tables.EN
+                return true
+            }
+
+            else -> return false
+        }
     }
 
 
