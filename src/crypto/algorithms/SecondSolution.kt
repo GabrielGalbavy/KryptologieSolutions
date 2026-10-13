@@ -89,6 +89,10 @@ class SecondSolution : Solver() {
         return cleanOutput
     }
 
+    fun filter(input: String): String {
+        return addSeparators(washTheMessage(input))
+    }
+
 
     //////// Key-related functions ////////
 
