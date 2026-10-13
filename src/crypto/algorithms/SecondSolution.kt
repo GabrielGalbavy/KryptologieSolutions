@@ -18,9 +18,9 @@ class SecondSolution : Solver() {
 
     data class Point(val row: Int, val col: Int)
 
-    var key: String = ""
+    var key: String = "KEY"
         private set
-    var tableType: Tables = Tables.CZ
+    var tableType: Tables = Tables.EN
     var table: Array<CharArray> = arrayOf(charArrayOf())
     val separators = charArrayOf('X', 'Q')
 
@@ -30,41 +30,13 @@ class SecondSolution : Solver() {
     override fun encrypt(input: String): String {
         val output = StringBuilder()
         val normInput = addSeparators(washTheMessage(input))
-
-        val pairList: List<Pair<Char, Char>> = normInput.chunked(2) { chunk ->
-            val first = chunk[0]
-            val second = chunk[1]
-            Pair(first, second)
-        }
+        val pairList: List<Pair<Char, Char>> = splitToPairs(normInput)
 
         this.table = tableFactory() // generates table with current key applied
 
         for (pair in pairList) {
-            val coords = locateTargets(pair)
-            var outputChars: Pair<Char, Char>
+            val outputChars = shiftLetters(pair, 1)
 
-            when {
-                coords.first.row == coords.second.row -> { // chars share row
-                    outputChars = Pair(
-                        this.table[coords.first.row][(coords.first.col + 1) % 5],
-                        this.table[coords.second.row][(coords.second.col + 1) % 5]
-                    )
-                }
-
-                coords.first.col == coords.second.col -> { // chars share column
-                    outputChars = Pair(
-                        this.table[(coords.first.row + 1) % 5][coords.first.col],
-                        this.table[(coords.second.row + 1) % 5][coords.second.col]
-                    )
-                }
-
-                else -> { // chars form a sub-table
-                    outputChars = Pair(
-                        this.table[coords.first.row][coords.second.col],
-                        this.table[coords.second.row][coords.first.col]
-                    )
-                }
-            }
             output.append(outputChars.first).append(outputChars.second).append(' ')
         }
 
@@ -98,8 +70,6 @@ class SecondSolution : Solver() {
 
     fun setKey(key: String): Boolean { // returns true in case the key was set
         val normalizedKey = normaliseKey(key)
-        println(normalizedKey)
-
         if (normalizedKey.isEmpty()) {
             return false
         } else {
@@ -158,8 +128,8 @@ class SecondSolution : Solver() {
 
     //////// other functions ////////
 
-    fun addSeparators(input: String): String {
-        var output: String = ""
+    private fun addSeparators(input: String): String {
+        var output = ""
         var previousChar: Char? = null
 
         input.forEach { ch ->
@@ -185,7 +155,7 @@ class SecondSolution : Solver() {
         } else output
     }
 
-    fun tableFactory(): Array<CharArray> {
+    private fun tableFactory(): Array<CharArray> {
         var keyImprint = this.key
         var alphabetIndex = 0
         val matrix = Array(5) { CharArray(5) }
@@ -216,7 +186,7 @@ class SecondSolution : Solver() {
         return matrix
     }
 
-    fun locateTargets(pair: Pair<Char, Char>): Pair<Point, Point> {
+    private fun locateTargets(pair: Pair<Char, Char>): Pair<Point, Point> {
         var col1 = 0
         var col2 = 0
         var row1 = 0
