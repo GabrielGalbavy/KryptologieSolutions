@@ -147,4 +147,39 @@ class SecondSolution : Solver() {
 
         return matrix
     }
+
+//    fun resolveFormation(charPair: Pair<Char, Char>): Formations {
+//        if (this.table.any { row -> charPair.first in row && charPair.second in row }) {
+//            return Formations.ROW
+//        } else {
+//            var indexFirst: Int
+//            var indexSecond: Int
+//            this.table.forEach { row -> if (row.contains(charPair.first)) indexFirst = row.indexOf(charPair.first) }
+//            this.table.forEach { row -> if (row.contains(charPair.second)) indexSecond = row.indexOf(charPair.second) }
+//        }
+//    }
+
+    fun locateTargets(pair: Pair<Char, Char>): Pair<Point, Point> {
+        var col1 = 0
+        var col2 = 0
+        var row1 = 0
+        var row2 = 0
+
+        this.table.forEachIndexed { i, row ->
+            row.forEachIndexed { j, ch ->
+                when (ch) {
+                    pair.first -> {
+                        row1 = i
+                        col1 = j
+                    }
+
+                    pair.second -> {
+                        row2 = i
+                        col2 = j
+                    }
+                }
+            }
+        }
+        return Pair(Point(row1, col1), Point(row2, col2))
+    }
 }
