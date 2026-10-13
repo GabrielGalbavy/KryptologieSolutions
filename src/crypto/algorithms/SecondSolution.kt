@@ -20,10 +20,8 @@ class SecondSolution : Solver() {
 
     var key: String = ""
         private set
-
     val tableType: Tables = Tables.CZ
     var table: Array<CharArray> = arrayOf(charArrayOf())
-
     val separators = charArrayOf('X', 'Q')
 
 
@@ -33,14 +31,48 @@ class SecondSolution : Solver() {
         val output = StringBuilder()
         val normInput = addSeparators(washTheMessage(input))
 
+        val pairList: List<Pair<Char, Char>> = normInput.chunked(2) { chunk ->
+            val first = chunk[0]
+            val second = chunk[1]
+            Pair(first, second)
+        }
+
         this.table = tableFactory() // generates table with current key applied
 
+        for (pair in pairList) {
+            val coords = locateTargets(pair)
+            var outputChars: Pair<Char, Char>
 
-        return input
+            when {
+                coords.first.row == coords.second.row -> { // chars share row
+                    outputChars = Pair(
+                        this.table[coords.first.row][(coords.first.col + 1) % 5],
+                        this.table[coords.second.row][(coords.second.col + 1) % 5]
+                    )
+                }
+
+                coords.first.col == coords.second.col -> { // chars share column
+                    outputChars = Pair(
+                        this.table[(coords.first.row + 1) % 5][coords.first.col],
+                        this.table[(coords.second.row + 1) % 5][coords.second.col]
+                    )
+                }
+
+                else -> { // chars form a sub-table
+                    outputChars = Pair(
+                        this.table[coords.first.row][coords.second.col],
+                        this.table[coords.second.row][coords.first.col]
+                    )
+                }
+            }
+            output.append(outputChars.toString())
+        }
+
+        return output.toString()
     }
 
     override fun decrypt(input: String): String {
-        TODO("Not yet implemented")
+        TODO("gl lol")
     }
 
 
@@ -149,17 +181,6 @@ class SecondSolution : Solver() {
 
         return matrix
     }
-
-//    fun resolveFormation(charPair: Pair<Char, Char>): Formations {
-//        if (this.table.any { row -> charPair.first in row && charPair.second in row }) {
-//            return Formations.ROW
-//        } else {
-//            var indexFirst: Int
-//            var indexSecond: Int
-//            this.table.forEach { row -> if (row.contains(charPair.first)) indexFirst = row.indexOf(charPair.first) }
-//            this.table.forEach { row -> if (row.contains(charPair.second)) indexSecond = row.indexOf(charPair.second) }
-//        }
-//    }
 
     fun locateTargets(pair: Pair<Char, Char>): Pair<Point, Point> {
         var col1 = 0
