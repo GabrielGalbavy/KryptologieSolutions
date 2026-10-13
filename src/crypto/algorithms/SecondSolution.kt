@@ -72,7 +72,21 @@ class SecondSolution : Solver() {
     }
 
     override fun decrypt(input: String): String {
-        TODO("gl lol")
+        val output = StringBuilder()
+        val normInput = input.replace(" ", "")
+        val pairList: List<Pair<Char, Char>> = splitToPairs(normInput)
+
+        this.table = tableFactory()
+
+        for (pair in pairList) {
+            val outputChars = shiftLetters(pair, -1)
+
+            output.append(outputChars.first).append(outputChars.second)
+        }
+
+        val cleanOutput = findSeparators(unwashTheMessage(output.toString().trim()))
+
+        return cleanOutput
     }
 
 
