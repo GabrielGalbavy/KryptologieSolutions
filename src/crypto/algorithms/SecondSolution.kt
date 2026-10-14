@@ -9,6 +9,7 @@ class SecondSolution : Solver() {
         return this.name
     }
 
+
     //////// variables ////////
 
     enum class Tables {
@@ -18,7 +19,7 @@ class SecondSolution : Solver() {
 
     data class Point(val row: Int, val col: Int)
 
-    var key: String = "KEY"
+    var key: String? = null
         private set
     var tableType: Tables = Tables.EN
     var table: Array<CharArray> = arrayOf(charArrayOf())
@@ -71,6 +72,7 @@ class SecondSolution : Solver() {
     fun setKey(key: String): Boolean { // returns true in case the key was set
         val normalizedKey = normaliseKey(key)
         if (normalizedKey.isEmpty()) {
+            this.key = null
             return false
         } else {
             this.key = normalizedKey
@@ -162,7 +164,7 @@ class SecondSolution : Solver() {
 
         for (row in matrix) {
             row.forEachIndexed { i, _ ->
-                if (keyImprint.isNotEmpty()) { // first add the key
+                if (!keyImprint.isNullOrBlank()) { // first add the key
                     row[i] = keyImprint.first()
                     keyImprint = keyImprint.drop(1)
                 } else {
@@ -233,8 +235,7 @@ class SecondSolution : Solver() {
 
             else -> { // chars form a sub-table
                 outputChars = Pair(
-                    this.table[coords.first.row][coords.second.col],
-                    this.table[coords.second.row][coords.first.col]
+                    this.table[coords.first.row][coords.second.col], this.table[coords.second.row][coords.first.col]
                 )
             }
         }
@@ -243,6 +244,9 @@ class SecondSolution : Solver() {
 
     private fun findSeparators(input: String): String {
         val regexPattern = Regex("([^XQ])[XQ]\\1")
+        // ^XQ --> anything beside X or Q
+        // [XQ] -> anything from interval containing X and Q
+        // \1 ---> repeat the first pattern chunk - ([^XQ])
         val output = regexPattern.replace(input, "$1$1")
 
         return output
@@ -250,8 +254,8 @@ class SecondSolution : Solver() {
 
     private fun splitToPairs(input: String): List<Pair<Char, Char>> {
         return input.chunked(2) { chunk ->
-            val first = chunk[0]
-            val second = chunk[1]
+            val first = chunk.first()
+            val second = chunk.last()
             Pair(first, second)
         }
     }
