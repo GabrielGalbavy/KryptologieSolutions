@@ -49,7 +49,7 @@ class FirstSolution : Solver() {
         return unwashTheMessage(message.joinToString(""))
     }
 
-    fun filter(input: String): String {
+    override fun filter(input: String): String {
         return washTheMessage(input)
     }
 

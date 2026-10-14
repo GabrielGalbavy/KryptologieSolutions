@@ -5,13 +5,32 @@ abstract class Solver {
 
     //////// essentials ////////
     abstract val name: String
+
+    /**
+     * Returns `name` in `String` form of this class instance.
+     */
     abstract fun whoAmI(): String
+
+    /**
+     * Turns `Open Text` in `String` form into `Cipher Text` by using provided `Key`.
+     */
     abstract fun encrypt(input: String): String
+
+    /**
+     * Turns `Cipher Text` in `String` form into `Open Text` by using provided `Key`.
+     */
     abstract fun decrypt(input: String): String
+
+    /**
+     * Turns Open Text in `String` form into `normalized` text format that is ready for encryption.
+     */
+    abstract fun filter(input: String): String
 
 
     //////// utils ////////
-
+    /**
+     * Used to `remove diacritics` from `Open Text`.
+     */
     protected val diacriticsMap = mapOf(
         'á' to 'A',
         'ä' to 'A',
@@ -52,8 +71,12 @@ abstract class Solver {
         'ž' to 'Z',
         'Ž' to 'Z'
     )
+
+    /**
+     * Masks all provided `Keys` for assigned `Placeholders`.
+     * Must have `1:1 key-value relation`, as it is also used in reverse.
+     */
     protected val keywordsMap = mutableMapOf(
-        // must have 1:1 key-value relation for decryption
         '0' to "XNULAX",
         '1' to "XJEDNAX",
         '2' to "XDVAX",
@@ -69,6 +92,10 @@ abstract class Solver {
         '-' to "XCARKAX",
     )
 
+    /**
+     * Takes `Open Text` as a `String` and turns it into `normalized text form` ready for encryption. Removes all `diacritics`,
+     * `special characters`, and `masks defined characters` for `keywords` by using `keywordsMap.
+     */
     protected fun washTheMessage(notCleanedMessage: String): String {
         var cleanMessage = ""
         notCleanedMessage.forEach { character ->
@@ -85,6 +112,10 @@ abstract class Solver {
         return cleanMessage
     }
 
+    /**
+     * Takes `Normalized text` as a `String` and turns it into `Open Text`.
+     * Basically reverts changes done by `washTheMessage` function. Can not bring back removed characters like `"!@%^$*&"`.
+     */
     protected fun unwashTheMessage(notCleanedMessage: String): String {
         var cleanMessage = notCleanedMessage
 

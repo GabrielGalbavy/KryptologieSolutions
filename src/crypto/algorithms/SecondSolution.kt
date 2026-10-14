@@ -62,7 +62,7 @@ class SecondSolution : Solver() {
         return cleanOutput
     }
 
-    fun filter(input: String): String {
+    override fun filter(input: String): String {
         return addSeparators(washTheMessage(input))
     }
 
