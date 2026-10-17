@@ -18,6 +18,18 @@ data class ColorPaletteDark(
     val bgSecondaryTransparent: Color = Color(28, 32, 60, 80)
 ) : ColorPalette
 
+data class ColorPaletteLight(
+    val bgPrimary: Color = Color(255, 255, 255),
+    val textWhite: Color = Color(255, 255, 255),
+    val mustardYellow: Color = Color(255, 168, 54),
+    val oceanicBlue: Color = Color(57, 93, 115),
+    val brighterBlue: Color = Color(88, 127, 151),
+    val menuPurple: Color = Color(189, 126, 243),
+    val meltdownRed: Color = Color(247, 87, 55),
+    val crystalBlue: Color = Color(55, 141, 247),
+)
+
+
 //data class ColorPaletteWhite (
 //
 //)
@@ -25,6 +37,8 @@ data class ColorPaletteDark(
 
 object AppTheme : ThemeModel() {
     override val dark = ColorPaletteDark()
+    val light = ColorPaletteLight()
+
     override val fontTitle = Font("SansSerif", Font.BOLD, 22)
     override val fontBody = Font("SansSerif", Font.PLAIN, 14)
 
