@@ -3,8 +3,12 @@
 import java.awt.BorderLayout
 import java.awt.Color
 import java.awt.Dimension
+import java.awt.Font
+import javax.swing.JButton
 import javax.swing.JFrame
+import javax.swing.JLabel
 import javax.swing.JPanel
+import javax.swing.SwingConstants
 
 class SecondSolutionFrame : JFrame() {
     init {
@@ -16,12 +20,34 @@ class SecondSolutionFrame : JFrame() {
 
         ////////// style //////////
 
+        val colorPackage = AppTheme.light
+
+
         ////////// backend and logic //////////
 
         ////////// components //////////
 
-        ////////// panels //////////
+        // labels
 
+        val headerLabel = JLabel("PlayFair šifra", SwingConstants.CENTER).apply {
+        }
+
+
+        val backBtn = JButton("Menu").apply {
+            background = colorPackage.menuPurple
+            foreground = colorPackage.textWhite
+
+            font = font.deriveFont(Font.BOLD, 16f)
+
+            addActionListener {
+                val welcomeFrame = WelcomeFrame()
+                welcomeFrame.isVisible = true
+                dispose()
+            }
+        }
+
+
+        ////////// panels //////////
 
         // center structure
 
@@ -44,13 +70,11 @@ class SecondSolutionFrame : JFrame() {
         val headerPanel = JPanel(BorderLayout()).apply {
             preferredSize = Dimension(0, 80)
             background = Color.DARK_GRAY
-
         }
 
         val bodyPanel = JPanel(BorderLayout()).apply {
-            add(bodyLeftSubPanel, BorderLayout.WEST)
-            add(bodyCenterSubPanel, BorderLayout.CENTER)
-            add(bodyRightSubPanel, BorderLayout.EAST)
+
+
         }
 
         val footerPanel = JPanel(BorderLayout()).apply {
@@ -61,8 +85,16 @@ class SecondSolutionFrame : JFrame() {
 
         ////////// implementation //////////
 
-        add(headerPanel, BorderLayout.NORTH)
-        add(bodyPanel, BorderLayout.CENTER)
-        add(footerPanel, BorderLayout.SOUTH)
+        bodyPanel.apply {
+            add(bodyLeftSubPanel, BorderLayout.WEST)
+            add(bodyCenterSubPanel, BorderLayout.CENTER)
+            add(bodyRightSubPanel, BorderLayout.EAST)
+        }
+
+        this.apply {
+            add(headerPanel, BorderLayout.NORTH)
+            add(bodyPanel, BorderLayout.CENTER)
+            add(footerPanel, BorderLayout.SOUTH)
+        }
     }
 }
