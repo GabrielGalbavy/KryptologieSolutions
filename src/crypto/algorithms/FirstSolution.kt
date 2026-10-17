@@ -1,8 +1,6 @@
 ﻿package crypto.algorithms
 
 import crypto.models.Solver
-import jdk.internal.joptsimple.internal.Messages.message
-
 
 class FirstSolution : Solver() {
 
