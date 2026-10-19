@@ -21,7 +21,7 @@ class SecondSolution : Solver() {
 
     var key: String? = null
         private set
-    var tableType: Tables = Tables.EN
+    var tableType: Tables = Tables.CZ
     var table: Array<CharArray> = arrayOf(charArrayOf())
     val separators = charArrayOf('X', 'Q')
 
@@ -57,7 +57,7 @@ class SecondSolution : Solver() {
             output.append(outputChars.first).append(outputChars.second)
         }
 
-        val cleanOutput = findSeparators(unwashTheMessage(output.toString().trim()))
+        val cleanOutput = unwashTheMessage(findSeparators(output.toString().trim()))
 
         return cleanOutput
     }
@@ -243,10 +243,10 @@ class SecondSolution : Solver() {
     }
 
     private fun findSeparators(input: String): String {
-        val regexPattern = Regex("([^XQ])[XQ]\\1")
-        // ^XQ --> anything beside X or Q
+        val regexPattern = Regex("([A-Z])[XQ]\\1")
+        // [A-Z] --> any character in alphabet
         // [XQ] -> anything from interval containing X and Q
-        // \1 ---> repeat the first pattern chunk - ([^XQ])
+        // \1 ---> repeat the first pattern chunk - ([A-Z])
         val output = regexPattern.replace(input, "$1$1")
 
         return output
