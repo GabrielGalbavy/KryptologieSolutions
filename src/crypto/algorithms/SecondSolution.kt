@@ -25,6 +25,7 @@ class SecondSolution : Solver() {
     var table: Array<CharArray> = arrayOf(charArrayOf())
     val separators = charArrayOf('X', 'Q')
 
+    val chunkSize = 5
 
     //////// cipher functions ////////
 
@@ -38,22 +39,26 @@ class SecondSolution : Solver() {
         for (pair in pairList) {
             val outputChars = shiftLetters(pair, 1)
 
-            output.append(outputChars.first).append(outputChars.second).append(' ')
+            output.append(outputChars.first).append(outputChars.second)
         }
 
-        return output.toString().trim()
+        val finalOutput = StringBuilder()
+        output.toString().trim().chunked(chunkSize).forEach { chunk -> finalOutput.append(chunk).append(' ') }
+
+        return finalOutput.toString().trim()
     }
 
     override fun decrypt(input: String): String {
-        val output = StringBuilder()
-        val normInput = input.replace(" ", "")
+
+        val normInput = input.replace(Regex("\\s+"), "")
+
         val pairList: List<Pair<Char, Char>> = splitToPairs(normInput)
 
         this.table = tableFactory()
 
+        val output = StringBuilder()
         for (pair in pairList) {
             val outputChars = shiftLetters(pair, -1)
-
             output.append(outputChars.first).append(outputChars.second)
         }
 
@@ -87,6 +92,7 @@ class SecondSolution : Solver() {
         inputKey.uppercase().forEach { ch ->
             var normChar = when {
                 diacriticsMap.containsKey(ch) -> diacriticsMap[ch]
+                // KEYWORDS MUST BE USABLE TOO, ADD THE LOGIC HERE SOMEWHERE
                 ch in 'A'..'Z' -> ch
                 else -> null
             }
@@ -157,7 +163,7 @@ class SecondSolution : Solver() {
         } else output
     }
 
-    private fun tableFactory(): Array<CharArray> {
+    fun tableFactory(): Array<CharArray> {
         var keyImprint = this.key
         var alphabetIndex = 0
         val matrix = Array(5) { CharArray(5) }
