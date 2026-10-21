@@ -243,11 +243,12 @@ class SecondSolution : Solver() {
     }
 
     private fun findSeparators(input: String): String {
-        val regexPattern = Regex("([A-Z])[XQ]\\1")
-        // [A-Z] --> any character in alphabet
-        // [XQ] -> anything from interval containing X and Q
-        // \1 ---> repeat the first pattern chunk - ([A-Z])
-        val output = regexPattern.replace(input, "$1$1")
+        val regexPatternX = Regex("([^X])X\\1") // any 3 letter pattern with X in the middle
+        val regexPatternQ = Regex("(X)Q\\1") // XQX
+
+        val output = regexPatternX
+            .replace(input, "$1$1")
+            .replace(regexPatternQ, "$1$1")
 
         return output
     }
