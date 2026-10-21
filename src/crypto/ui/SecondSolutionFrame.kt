@@ -309,19 +309,19 @@ class SecondSolutionFrame : JFrame() {
             }
         }
 
-        // 2. Získanie surového vstupu a filtrovanie cez solver.filter(...)
         val rawInput = inputTextArea.text ?: ""
-        val filteredText = solver.filter(rawInput)
-        filteredTextArea.text = filteredText
+        val isEncrypt = operationComboBox.selectedIndex == 0
 
-        // 3. Volenie operácie (Encrypt / Decrypt) podľa vybranej položky v comboboxe
-        val resultText = if (operationComboBox.selectedIndex == 0) {
-            solver.encrypt(filteredText)
+        if (isEncrypt) {
+            // Šifrovanie: prebehne cez bežný filter (pridanie separátorov atď.)
+            val filteredText = solver.filter(rawInput)
+            filteredTextArea.text = filteredText
+            outputTextArea.text = solver.encrypt(filteredText)
         } else {
-            solver.decrypt(filteredText)
+            // Dešifrovanie: ošetriť tak, aby sa poslal čistý text bez akýchkoľvek bielych znakov (whitespace)
+            val solidCiphertext = rawInput.replace(Regex("\\s+"), "").uppercase()
+            filteredTextArea.text = solidCiphertext
+            outputTextArea.text = solver.decrypt(solidCiphertext)
         }
-
-        // 4. Zapísanie výsledku do výstupného textového poľa
-        outputTextArea.text = resultText
     }
 }
