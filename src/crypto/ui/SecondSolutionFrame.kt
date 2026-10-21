@@ -12,9 +12,12 @@ class SecondSolutionFrame : JFrame() {
     // Farby z AppTheme.light
     private val colorPackage = AppTheme.light
 
+    // Aktuálny stav operácie (true = Encrypt, false = Decrypt)
+    private var isEncryptMode = true
+
     // Komponenty, ku ktorým potrebujeme prístup z funkcií
     private val keyInputField = JTextField("KEY", 12).apply {
-        font = Font("SansSerif", Font.BOLD, 14)
+        font = Font("SansSerif", Font.BOLD, 18)
         background = colorPackage.mustardYellow
         foreground = colorPackage.textWhite
         caretColor = colorPackage.textWhite
@@ -23,7 +26,7 @@ class SecondSolutionFrame : JFrame() {
 
     private val tableLabels = Array(25) {
         JLabel("", SwingConstants.CENTER).apply {
-            font = Font("SansSerif", Font.BOLD, 18)
+            font = Font("SansSerif", Font.BOLD, 22)
             isOpaque = true
             background = colorPackage.oceanicBlue
             foreground = colorPackage.textWhite
@@ -31,24 +34,46 @@ class SecondSolutionFrame : JFrame() {
         }
     }
 
-    // Výber jazyka tabuľky (EN / CZ)
-    private val languageComboBox = JComboBox(arrayOf("English (J=I)", "Czech (W=V)")).apply {
-        font = Font("SansSerif", Font.PLAIN, 12)
-        background = colorPackage.bgPrimary
-        foreground = colorPackage.textDark
+    // Tlačidlá pre výber jazyka (podľa nákresu)
+    private val czechBtn = JButton("CZECH").apply {
+        font = Font("SansSerif", Font.BOLD, 16)
+        isFocusPainted = false
         addActionListener {
-            val selectedLang = if (selectedIndex == 0) "english" else "czech"
-            solver.setTableLanguage(selectedLang)
-            executeCipher() // Po zmene jazyka sa pregeneruje 5x5 matica
+            solver.setTableLanguage("czech")
+            updateLanguageButtonStyles(isCzech = true)
+            executeCipher()
         }
     }
 
-    // Výber operácie (Encrypt / Decrypt)
-    private val operationComboBox = JComboBox(arrayOf("Encrypt", "Decrypt")).apply {
-        font = Font("SansSerif", Font.PLAIN, 12)
-        background = colorPackage.bgPrimary
-        foreground = colorPackage.textDark
+    private val englishBtn = JButton("ENGLISH").apply {
+        font = Font("SansSerif", Font.BOLD, 16)
+        isFocusPainted = false
         addActionListener {
+            solver.setTableLanguage("english")
+            updateLanguageButtonStyles(isCzech = false)
+            executeCipher()
+        }
+    }
+
+    // Tlačidlá pre Encrypt / Decrypt (podľa nákresu v strede)
+    private val encryptBtn = JButton("Encrypt").apply {
+        font = Font("SansSerif", Font.BOLD, 18)
+        background = colorPackage.meltdownRed
+        foreground = colorPackage.textWhite
+        isFocusPainted = false
+        addActionListener {
+            isEncryptMode = true
+            executeCipher()
+        }
+    }
+
+    private val decryptBtn = JButton("Decrypt").apply {
+        font = Font("SansSerif", Font.BOLD, 18)
+        background = colorPackage.crystalBlue
+        foreground = colorPackage.textWhite
+        isFocusPainted = false
+        addActionListener {
+            isEncryptMode = false
             executeCipher()
         }
     }
@@ -60,7 +85,7 @@ class SecondSolutionFrame : JFrame() {
         background = colorPackage.oceanicBlue
         foreground = colorPackage.textWhite
         caretColor = colorPackage.textWhite
-        font = Font("SansSerif", Font.PLAIN, 14)
+        font = Font("SansSerif", Font.PLAIN, 18)
         border = BorderFactory.createEmptyBorder(8, 8, 8, 8)
     }
 
@@ -70,7 +95,7 @@ class SecondSolutionFrame : JFrame() {
         isEditable = false
         background = colorPackage.oceanicBlue
         foreground = colorPackage.textWhite
-        font = Font("SansSerif", Font.PLAIN, 14)
+        font = Font("SansSerif", Font.PLAIN, 18)
         border = BorderFactory.createEmptyBorder(8, 8, 8, 8)
     }
 
@@ -81,7 +106,7 @@ class SecondSolutionFrame : JFrame() {
         isEditable = false
         background = colorPackage.oceanicBlue
         foreground = colorPackage.textWhite
-        font = Font("SansSerif", Font.PLAIN, 12)
+        font = Font("SansSerif", Font.PLAIN, 16)
         border = BorderFactory.createEmptyBorder(4, 4, 4, 4)
     }
 
@@ -92,18 +117,28 @@ class SecondSolutionFrame : JFrame() {
         layout = BorderLayout()
         contentPane.background = colorPackage.bgPrimary
 
+        // Predvolene nastavíme češtinu (alebo angličtinu podľa potreby, tu napr. česká tabuľka ako na obrázku)
+        solver.setTableLanguage("czech")
+        updateLanguageButtonStyles(isCzech = true)
+
         ////////// components //////////
 
-        val headerLabel = JLabel("PlayFair Cipher", SwingConstants.CENTER).apply {
-            font = Font("SansSerif", Font.BOLD, 26)
-            border = BorderFactory.createEmptyBorder(20, 25, 10, 25)
+        val headerLabel = JLabel("PLAYFAIR CIPHER", SwingConstants.CENTER).apply {
+            font = Font("SansSerif", Font.BOLD, 30)
+            border = BorderFactory.createEmptyBorder(20, 25, 5, 25)
             foreground = colorPackage.textDark
+        }
+
+        val subHeaderLabel = JLabel("EVEN KIDS CAN DO IT!", SwingConstants.CENTER).apply {
+            font = Font("SansSerif", Font.BOLD, 16)
+            foreground = colorPackage.textDark
+            border = BorderFactory.createEmptyBorder(0, 0, 10, 0)
         }
 
         val backBtn = JButton("Menu").apply {
             background = colorPackage.menuPurple
             foreground = colorPackage.textWhite
-            font = Font("SansSerif", Font.BOLD, 16)
+            font = Font("SansSerif", Font.BOLD, 20)
             isFocusPainted = false
 
             addActionListener {
@@ -122,9 +157,13 @@ class SecondSolutionFrame : JFrame() {
             add(backBtn)
         }
 
-        val headerCenterSubPanel = JPanel(BorderLayout()).apply {
+        val headerCenterSubPanel = JPanel().apply {
+            layout = BoxLayout(this, BoxLayout.Y_AXIS)
             background = colorPackage.bgPrimary
-            add(headerLabel, BorderLayout.CENTER)
+            headerLabel.alignmentX = Component.CENTER_ALIGNMENT
+            subHeaderLabel.alignmentX = Component.CENTER_ALIGNMENT
+            add(headerLabel)
+            add(subHeaderLabel)
         }
 
         val headerRightSubPanel = JPanel(BorderLayout()).apply {
@@ -138,8 +177,8 @@ class SecondSolutionFrame : JFrame() {
             background = colorPackage.bgPrimary
             border = BorderFactory.createEmptyBorder(10, 10, 10, 10)
 
-            val titleLabel = JLabel("Input Text").apply {
-                font = Font("SansSerif", Font.BOLD, 14)
+            val titleLabel = JLabel("INPUT TEXT").apply {
+                font = Font("SansSerif", Font.BOLD, 18)
                 foreground = colorPackage.textDark
                 border = BorderFactory.createEmptyBorder(0, 0, 5, 0)
             }
@@ -171,24 +210,16 @@ class SecondSolutionFrame : JFrame() {
                 }
             }
 
-            // Dole: Tlačidlo na spustenie (Run / Encrypt)
-            val generateBtn = JButton("Run").apply {
-                font = Font("SansSerif", Font.BOLD, 14)
-                background = colorPackage.crystalBlue
-                foreground = colorPackage.textWhite
-                isFocusPainted = false
-                addActionListener {
-                    executeCipher()
-                }
-            }
-            val generatePanel = JPanel(FlowLayout(FlowLayout.CENTER)).apply {
+            // Dole: Tlačidlá Encrypt a Decrypt vedľa seba
+            val actionButtonsPanel = JPanel(FlowLayout(FlowLayout.CENTER, 10, 5)).apply {
                 background = colorPackage.bgPrimary
-                add(generateBtn)
+                add(encryptBtn)
+                add(decryptBtn)
             }
 
             add(keyPanel, BorderLayout.NORTH)
             add(cipherTablePanel, BorderLayout.CENTER)
-            add(generatePanel, BorderLayout.SOUTH)
+            add(actionButtonsPanel, BorderLayout.SOUTH)
         }
 
         val bodyRightSubPanel = JPanel(BorderLayout()).apply {
@@ -196,8 +227,8 @@ class SecondSolutionFrame : JFrame() {
             background = colorPackage.bgPrimary
             border = BorderFactory.createEmptyBorder(10, 10, 10, 10)
 
-            val titleLabel = JLabel("Output Text").apply {
-                font = Font("SansSerif", Font.BOLD, 14)
+            val titleLabel = JLabel("OUTPUT TEXT").apply {
+                font = Font("SansSerif", Font.BOLD, 18)
                 foreground = colorPackage.textDark
                 border = BorderFactory.createEmptyBorder(0, 0, 5, 0)
             }
@@ -210,47 +241,39 @@ class SecondSolutionFrame : JFrame() {
             add(scrollPane, BorderLayout.CENTER)
         }
 
-        // Footer structure
-        val footerLeftSubPanel = JPanel().apply {
+        // Footer structure (Vľavo jazykové tlačidlá pod sebou, v strede filtrovaný text)
+        val langButtonsPanel = JPanel().apply {
             layout = BoxLayout(this, BoxLayout.Y_AXIS)
+            background = colorPackage.bgPrimary
+            czechBtn.alignmentX = Component.CENTER_ALIGNMENT
+            englishBtn.alignmentX = Component.CENTER_ALIGNMENT
+
+            add(czechBtn)
+            add(Box.createRigidArea(Dimension(0, 5)))
+            add(englishBtn)
+        }
+
+        val footerLeftSubPanel = JPanel(BorderLayout()).apply {
             background = colorPackage.bgPrimary
             border = BorderFactory.createTitledBorder(
                 BorderFactory.createLineBorder(colorPackage.brighterBlue),
-                "Settings",
+                "TABLE LANGUAGE",
                 javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
                 javax.swing.border.TitledBorder.DEFAULT_POSITION,
-                Font("SansSerif", Font.BOLD, 12),
+                Font("SansSerif", Font.BOLD, 14),
                 colorPackage.textDark
             )
             preferredSize = Dimension(220, 0)
-
-            val langLabel = JLabel("Table Language:").apply {
-                font = Font("SansSerif", Font.PLAIN, 12)
-                foreground = colorPackage.textDark
-                alignmentX = Component.LEFT_ALIGNMENT
-            }
-            languageComboBox.alignmentX = Component.LEFT_ALIGNMENT
-
-            val opLabel = JLabel("Operation:").apply {
-                font = Font("SansSerif", Font.PLAIN, 12)
-                foreground = colorPackage.textDark
-                alignmentX = Component.LEFT_ALIGNMENT
-            }
-            operationComboBox.alignmentX = Component.LEFT_ALIGNMENT
-
-            add(langLabel)
-            add(languageComboBox)
-            add(Box.createRigidArea(Dimension(0, 8)))
-            add(opLabel)
-            add(operationComboBox)
+            add(langButtonsPanel, BorderLayout.CENTER)
         }
 
         val footerCenterSubPanel = JPanel(BorderLayout()).apply {
             background = colorPackage.bgPrimary
             border = BorderFactory.createEmptyBorder(5, 10, 5, 10)
-            val footerTitleLabel = JLabel("Filtered Text / Debug").apply {
-                font = Font("SansSerif", Font.BOLD, 12)
+            val footerTitleLabel = JLabel("FILTERED TEXT").apply {
+                font = Font("SansSerif", Font.BOLD, 16)
                 foreground = colorPackage.textDark
+                horizontalAlignment = SwingConstants.CENTER
                 border = BorderFactory.createEmptyBorder(0, 0, 3, 0)
             }
             val footerScrollPane = JScrollPane(filteredTextArea).apply {
@@ -271,7 +294,7 @@ class SecondSolutionFrame : JFrame() {
 
         // Window structure
         val headerPanel = JPanel(BorderLayout()).apply {
-            preferredSize = Dimension(0, 80)
+            preferredSize = Dimension(0, 90)
             background = colorPackage.bgPrimary
             add(headerLeftSubPanel, BorderLayout.WEST)
             add(headerCenterSubPanel, BorderLayout.CENTER)
@@ -296,6 +319,20 @@ class SecondSolutionFrame : JFrame() {
         executeCipher()
     }
 
+    private fun updateLanguageButtonStyles(isCzech: Boolean) {
+        if (isCzech) {
+            czechBtn.background = colorPackage.mustardYellow
+            czechBtn.foreground = colorPackage.textWhite
+            englishBtn.background = colorPackage.brighterBlue
+            englishBtn.foreground = colorPackage.textWhite
+        } else {
+            englishBtn.background = colorPackage.mustardYellow
+            englishBtn.foreground = colorPackage.textWhite
+            czechBtn.background = colorPackage.brighterBlue
+            czechBtn.foreground = colorPackage.textWhite
+        }
+    }
+
     private fun executeCipher() {
         // 1. Nastavenie kľúča a vygenerovanie 5x5 matice tabuľky
         solver.setKey(keyInputField.text)
@@ -310,15 +347,14 @@ class SecondSolutionFrame : JFrame() {
         }
 
         val rawInput = inputTextArea.text ?: ""
-        val isEncrypt = operationComboBox.selectedIndex == 0
 
-        if (isEncrypt) {
-            // Šifrovanie: prebehne cez bežný filter (pridanie separátorov atď.)
+        if (isEncryptMode) {
+            // Šifrovanie: prebehne cez bežný filter
             val filteredText = solver.filter(rawInput)
             filteredTextArea.text = filteredText
             outputTextArea.text = solver.encrypt(filteredText)
         } else {
-            // Dešifrovanie: ošetriť tak, aby sa poslal čistý text bez akýchkoľvek bielych znakov (whitespace)
+            // Dešifrovanie: ošetriť tak, aby sa poslal čistý text bez bielych znakov
             val solidCiphertext = rawInput.replace(Regex("\\s+"), "").uppercase()
             filteredTextArea.text = solidCiphertext
             outputTextArea.text = solver.decrypt(solidCiphertext)
