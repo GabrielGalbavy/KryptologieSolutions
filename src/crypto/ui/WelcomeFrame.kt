@@ -111,11 +111,11 @@ class WelcomeFrame : JFrame("Crypto Solver") {
                     solutionFrame.isVisible = true
                 }
 
-//                1 -> {
-//                    val solutionFrame = SecondSolutionFrame()
-//                    dispose()
-//                    solutionFrame.isVisible = true
-//                } ....
+                1 -> {
+                    val solutionFrame = SecondSolutionFrame()
+                    dispose()
+                    solutionFrame.isVisible = true
+                }
 
                 else -> JOptionPane.showMessageDialog(
                     this, "No backend found for selected cipher. :("
