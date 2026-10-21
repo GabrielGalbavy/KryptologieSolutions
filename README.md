@@ -13,13 +13,20 @@ A modular, dark-themed desktop application built with **Kotlin** and **Java Swin
 ## Features
 
 - **Launch menu**
-- **1. Affine Cipher Solver:**
+- **1. Affine Cipher**
   - Full support for encryption and decryption ($E(x) = (a \cdot x + b) \bmod 26$)
   - **Live Alphabet Substitution Grid** 
   - **Text Normalization** 
   - **Keyword Formatting from custom dictionary**
   - **Key Validation** with support for positive/negative key normalizations
-- more comming soon..
+- **2. PlayFair Cipher**
+  - Full support for encryption and decryption
+  - Live 5x5 Matrix Substitution Grid
+  - Multi-Language Alphabet Support (English: J=I, Czech: W=V)
+  - Text Normalization & Filtering with smart separator insertion (X/Q)
+  - Dynamic Key Processing & Keyword Mapping Support
+  - Formatted Output chunked into 5-character blocks
+- more coming soon..
 
 ---
 
