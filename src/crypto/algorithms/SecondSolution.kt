@@ -21,7 +21,7 @@ class SecondSolution : Solver() {
 
     var key: String? = null
         private set
-    var tableType: Tables = Tables.CZ
+    var tableType: Tables = Tables.EN
     var table: Array<CharArray> = arrayOf(charArrayOf())
     val separators = charArrayOf('X', 'Q')
 
@@ -31,7 +31,8 @@ class SecondSolution : Solver() {
 
     override fun encrypt(input: String): String {
         val output = StringBuilder()
-        val normInput = addSeparators(washTheMessage(input))
+        val normInput = actuallyIAmHereToInterpret(addSeparators(washTheMessage(input)))
+
         val pairList: List<Pair<Char, Char>> = splitToPairs(normInput)
 
         this.table = tableFactory() // generates table with current key applied
@@ -68,7 +69,7 @@ class SecondSolution : Solver() {
     }
 
     override fun filter(input: String): String {
-        return addSeparators(washTheMessage(input))
+        return actuallyIAmHereToInterpret(addSeparators(washTheMessage(input)))
     }
 
 
@@ -252,9 +253,7 @@ class SecondSolution : Solver() {
         val regexPatternX = Regex("([^X])X\\1") // any 3 letter pattern with X in the middle
         val regexPatternQ = Regex("(X)Q\\1") // XQX
 
-        val output = regexPatternX
-            .replace(input, "$1$1")
-            .replace(regexPatternQ, "$1$1")
+        val output = regexPatternX.replace(input, "$1$1").replace(regexPatternQ, "$1$1")
 
         return output
     }
@@ -265,5 +264,17 @@ class SecondSolution : Solver() {
             val second = chunk.last()
             Pair(first, second)
         }
+    }
+
+    private fun actuallyIAmHereToInterpret(input: String): String {
+        val output = when (tableType) {
+            Tables.EN -> {
+                input.replace('J', 'I')
+            } // could be elevated to dedicated table
+            Tables.CZ -> {
+                input.replace('W', 'V')
+            }
+        }
+        return output
     }
 }
