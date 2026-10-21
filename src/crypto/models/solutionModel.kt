@@ -77,19 +77,19 @@ abstract class Solver {
      * Must have `1:1 key-value relation`, as it is also used in reverse.
      */
     protected val keywordsMap = mutableMapOf(
-        '0' to "XNULAX",
-        '1' to "XJEDNAX",
-        '2' to "XDVAX",
-        '3' to "XTRIX",
-        '4' to "XSTYRIX",
-        '5' to "XPATX",
-        '6' to "XSESTX",
-        '7' to "XSEDEMX",
-        '8' to "XOSEMX",
-        '9' to "XDEVATX",
+        '0' to "QNULAQ",
+        '1' to "QIEDNAQ",
+        '2' to "QDVAQ",
+        '3' to "QTRIQ",
+        '4' to "QSTYRIQ",
+        '5' to "QPATQ",
+        '6' to "QSESTQ",
+        '7' to "QSEDEMQ",
+        '8' to "QOSEMQ",
+        '9' to "QDEVATQ",
 
-        ' ' to "XMEZERAX",
-        '-' to "XCARKAX",
+        ' ' to "QMEZERAQ",
+        '-' to "QCARKAQ",
     )
 
     /**
