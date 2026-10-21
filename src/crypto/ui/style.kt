@@ -21,6 +21,7 @@ data class ColorPaletteDark(
 data class ColorPaletteLight(
     val bgPrimary: Color = Color(255, 255, 255),
     val textWhite: Color = Color(255, 255, 255),
+    val textDark: Color = Color(30,30,30),
     val mustardYellow: Color = Color(255, 168, 54),
     val oceanicBlue: Color = Color(57, 93, 115),
     val brighterBlue: Color = Color(88, 127, 151),
