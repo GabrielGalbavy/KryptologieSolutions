@@ -50,14 +50,11 @@ class SecondSolution : Solver() {
     }
 
     override fun decrypt(input: String): String {
-
-        val normInput = input.replace(Regex("\\s+"), "")
-
+        val normInput = washTheMessage(input.replace(Regex("\\s+"), ""))
         val pairList: List<Pair<Char, Char>> = splitToPairs(normInput)
-
         this.table = tableFactory()
-
         val output = StringBuilder()
+
         for (pair in pairList) {
             val outputChars = shiftLetters(pair, -1)
             output.append(outputChars.first).append(outputChars.second)
@@ -261,7 +258,7 @@ class SecondSolution : Solver() {
     private fun splitToPairs(input: String): List<Pair<Char, Char>> {
         return input.chunked(2) { chunk ->
             val first = chunk.first()
-            val second = chunk.last()
+            val second = if (chunk.length < 2) ' ' else chunk.last() // in case the chunk is 1 char long
             Pair(first, second)
         }
     }
@@ -270,11 +267,13 @@ class SecondSolution : Solver() {
         val output = when (tableType) {
             Tables.EN -> {
                 input.replace('J', 'I')
-            } // could be elevated to dedicated table
+            }
+
             Tables.CZ -> {
                 input.replace('W', 'V')
             }
         }
+        // masking letters could be elevated to dedicated table
         return output
     }
 }
