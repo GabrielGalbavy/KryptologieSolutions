@@ -129,7 +129,7 @@ class SecondSolutionFrame : JFrame() {
             foreground = colorPackage.textDark
         }
 
-        val subHeaderLabel = JLabel("EVEN KIDS CAN DO IT!", SwingConstants.CENTER).apply {
+        val subHeaderLabel = JLabel("", SwingConstants.CENTER).apply {
             font = Font("SansSerif", Font.BOLD, 16)
             foreground = colorPackage.textDark
             border = BorderFactory.createEmptyBorder(0, 0, 10, 0)
