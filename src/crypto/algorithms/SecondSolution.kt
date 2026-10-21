@@ -88,31 +88,39 @@ class SecondSolution : Solver() {
         val key = StringBuilder() // more memory friendly than string + string
 
         inputKey.uppercase().forEach { ch ->
+
+            // resolve if we have letter or a keyword in hands
             var normChar = when {
                 diacriticsMap.containsKey(ch) -> diacriticsMap[ch]
-                // KEYWORDS MUST BE USABLE TOO, ADD THE LOGIC HERE SOMEWHERE
+                keywordsMap.containsKey(ch) -> keywordsMap[ch]
                 ch in 'A'..'Z' -> ch
                 else -> null
             }
 
             if (normChar != null) {
-                normChar = when (tableType) {
-                    Tables.CZ -> {
-                        if (normChar == 'W') 'V' else normChar
-                    }
 
-                    Tables.EN -> {
-                        if (normChar == 'J') 'I' else normChar
+                if (normChar is Char) {
+                    normChar = when (tableType) {
+                        Tables.CZ -> {
+                            if (normChar == 'W') 'V' else normChar
+                        }
+
+                        Tables.EN -> {
+                            if (normChar == 'J') 'I' else normChar
+                        }
                     }
+                    key.append(normChar)
+                } else if (normChar is String) {
+                    key.append(normChar)
                 }
-            }
-
-            if (normChar != null && !key.contains(normChar)) {
-                key.append(normChar)
             }
         }
 
-        return key.toString()
+        val normalisedKey = StringBuilder()
+
+        key.forEach { ch -> if (!normalisedKey.toString().contains(ch)) normalisedKey.append(ch) }
+
+        return normalisedKey.toString()
     }
 
     fun setTableLanguage(language: String): Boolean { // returns true in case the language was set
