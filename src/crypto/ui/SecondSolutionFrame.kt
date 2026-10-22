@@ -351,12 +351,12 @@ class SecondSolutionFrame : JFrame() {
         if (isEncryptMode) {
             // Šifrovanie: prebehne cez bežný filter
             val filteredText = solver.filter(rawInput)
-            filteredTextArea.text = filteredText
+            filteredTextArea.text = filteredText.chunked(2).toList().joinToString(" ")
             outputTextArea.text = solver.encrypt(filteredText)
         } else {
             // Dešifrovanie: ošetriť tak, aby sa poslal čistý text bez bielych znakov
             val solidCiphertext = rawInput.replace(Regex("\\s+"), "").uppercase()
-            filteredTextArea.text = solidCiphertext
+            filteredTextArea.text = solidCiphertext.chunked(2).toList().joinToString(" ")
             outputTextArea.text = solver.decrypt(solidCiphertext)
         }
     }

@@ -62,6 +62,8 @@ class SecondSolution : Solver() {
 
         val cleanOutput = unwashTheMessage(findSeparators(output.toString().trim()))
 
+        if (cleanOutput.last() == 'X' || cleanOutput.last() == 'Q')
+            return cleanOutput.dropLast(1)
         return cleanOutput
     }
 
@@ -284,4 +286,6 @@ class SecondSolution : Solver() {
         // masking letters could be elevated to dedicated table
         return output
     }
+
+
 }

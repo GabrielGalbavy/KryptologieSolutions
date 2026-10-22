@@ -3,7 +3,6 @@ package crypto
 import crypto.algorithms.FirstSolution
 import crypto.algorithms.SecondSolution
 import crypto.models.Solver
-import crypto.ui.SecondSolutionFrame
 import crypto.ui.WelcomeFrame
 import javax.swing.SwingUtilities
 
