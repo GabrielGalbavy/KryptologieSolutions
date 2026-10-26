@@ -125,8 +125,8 @@ abstract class Solver {
         return cleanMessage
     }
 
-    protected fun sliceTheCode(orig: String): String {
-        return orig.chunked(5).joinToString(" ")
+    protected fun sliceTheCode(orig: String, n: Int = 5): String {
+        return orig.chunked(n).joinToString(" ")
     }
 
     protected fun gcd(a: Int, b: Int): Int = if (b == 0) a else gcd(b, a % b)
