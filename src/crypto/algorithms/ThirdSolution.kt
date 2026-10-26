@@ -79,7 +79,7 @@ class ThirdSolution : Solver() {
 
         val shuffledList = rawAlphabet.toList().shuffled(randomOperator)
 
-        // whatever
+        // constructing the table with power of math and shi
         return Array(size) { rowIndex ->
             CharArray(size) { colIndex ->
                 shuffledList[rowIndex * size + colIndex]
@@ -94,8 +94,35 @@ class ThirdSolution : Solver() {
 
 
     private fun mapMessage(input: String, table: Array<CharArray>): String {
-        TODO()
+        val output = StringBuilder()
+        val usableHeaders = when (this.tableSize) {
+            TableSizes.SMALL -> {
+                smallHeader
+            }
+
+            TableSizes.LARGE -> {
+                largeHeader
+            }
+        }
+
+        input.forEach { ch ->
+            val coords = locateTargetCoords(table, ch)
+            if (coords != null)
+                output.append(usableHeaders[coords.first]).append(usableHeaders[coords.second])
+        }
+        return output.toString()
     }
+
+    private fun locateTargetCoords(table: Array<CharArray>, target: Char): Pair<Int, Int>? {
+        table.forEachIndexed { rowIndex, row ->
+            val colIndex = row.indexOf(target)
+            if (colIndex != -1) {
+                return Pair(rowIndex, colIndex)
+            }
+        }
+        return null
+    }
+
 
     private fun extractMessage() {
         TODO("Not yet implemented")
