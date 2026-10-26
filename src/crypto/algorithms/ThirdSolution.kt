@@ -39,7 +39,61 @@ class ThirdSolution : Solver() {
 
     //////// other functions ////////
 
-    private fun tableFactory(seed: Int? = this.seed): Array<CharArray> {
-        TODO("gl lol")
+    fun tableFactory(): Array<CharArray> {
+        val size: Int
+        val randomOperator = Random(this.seed)
+        val rawAlphabet: String
+
+        when (this.tableSize) {
+            TableSizes.SMALL -> {
+                size = 5
+                rawAlphabet = when (this.tableLanguage) {
+                    Tables.CZ -> smallAlphabet.replace("W", "")
+                    Tables.EN -> smallAlphabet.replace("J", "")
+                }
+            }
+
+            TableSizes.LARGE -> {
+                size = 6
+                rawAlphabet = largeAlphabet
+            }
+        }
+
+        val shuffledList = rawAlphabet.toList().shuffled(randomOperator)
+
+        // whatever
+        return Array(size) { rowIndex ->
+            CharArray(size) { colIndex ->
+                shuffledList[rowIndex * size + colIndex]
+            }
+        }
+    }
+
+
+    private fun formFactory(): Map<Char, List<Char>> {
+        TODO("Not yet implemented")
+    }
+
+
+    private fun mapMessage(input: String, table: Array<CharArray>): String {
+        TODO()
+    }
+
+    private fun extractMessage() {
+        TODO("Not yet implemented")
+    }
+
+    private fun actuallyIAmHereToInterpret(input: String): String {
+        val output = when (tableLanguage) {
+            Tables.EN -> {
+                input.replace('J', 'I')
+            }
+
+            Tables.CZ -> {
+                input.replace('W', 'V')
+            }
+        }
+        // masking letters could be elevated to dedicated table
+        return output
     }
 }
