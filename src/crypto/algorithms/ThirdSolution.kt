@@ -1,6 +1,7 @@
 ﻿package crypto.algorithms
 
 import crypto.models.Solver
+import kotlin.random.Random
 
 class ThirdSolution : Solver() {
     override val name: String = "ADFG(V)X šifra"
@@ -12,13 +13,28 @@ class ThirdSolution : Solver() {
 
     //////// variables ////////
 
-    var seed: Int? = null
+    var seed: Int = 123
+    var keyword: String? = null
+    var tableLanguage: Tables = Tables.CZ
+    var tableSize: TableSizes = TableSizes.SMALL
+
+    val smallString: String = "ADFGX"
+    val largeString: String = "ADFGVX"
+    val smallAlphabet: String = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    val largeAlphabet: String = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+
+    var smallTable: Array<CharArray> = Array(5) { CharArray(5) }
+    var bigTable: Array<CharArray> = Array(6) { CharArray(6) }
 
     enum class Tables {
         CZ, // masking W as V
         EN // masking J as I
     }
 
+    enum class TableSizes {
+        SMALL, // ADFGX
+        LARGE // ADFGVX
+    }
 
     //////// cipher functions ////////
 
