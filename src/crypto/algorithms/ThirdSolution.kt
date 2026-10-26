@@ -88,10 +88,26 @@ class ThirdSolution : Solver() {
     }
 
 
-    private fun formFactory(): Map<Char, List<Char>> {
-        TODO("Not yet implemented")
-    }
+    private fun formFactory(input: String): List<List<String>>? {
+        val key = keyword ?: return null
+        var remainingInput = input
+        val output = mutableListOf<MutableList<String>>()
 
+        key.forEach { ch ->
+            output.add(mutableListOf(ch.toString()))
+            // we create mutable list for each keyword character
+        }
+        while (remainingInput.isNotEmpty()) {
+            output.forEach { verticalColumn ->
+                if (remainingInput.isNotEmpty()) {
+                    verticalColumn.add(remainingInput.first().toString())
+                    remainingInput = remainingInput.drop(1)
+                } else verticalColumn.add(" ")
+            }
+        }
+
+        return output
+    }
 
     private fun mapMessage(input: String, table: Array<CharArray>): String {
         val output = StringBuilder()
@@ -107,8 +123,7 @@ class ThirdSolution : Solver() {
 
         input.forEach { ch ->
             val coords = locateTargetCoords(table, ch)
-            if (coords != null)
-                output.append(usableHeaders[coords.first]).append(usableHeaders[coords.second])
+            if (coords != null) output.append(usableHeaders[coords.first]).append(usableHeaders[coords.second])
         }
         return output.toString()
     }
