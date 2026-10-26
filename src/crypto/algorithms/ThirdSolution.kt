@@ -15,11 +15,13 @@ class ThirdSolution : Solver() {
 
     var seed: Int = 123
     var keyword: String? = null
+    var ourTable: Array<CharArray>? = null
+
     var tableLanguage: Tables = Tables.CZ
     var tableSize: TableSizes = TableSizes.SMALL
 
-    val smallString: String = "ADFGX"
-    val largeString: String = "ADFGVX"
+    val smallHeader = charArrayOf('A', 'D', 'F', 'G', 'X')
+    val largeHeader = charArrayOf('A', 'D', 'F', 'G', 'V', 'X')
     val smallAlphabet: String = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     val largeAlphabet: String = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
