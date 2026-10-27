@@ -55,6 +55,14 @@ class ThirdSolution : Solver() {
 
     //////// Key-related functions ////////
 
+    public fun setKeyword(keyword: String) {
+        TODO()
+    }
+
+    private fun validateKeyword() {
+        TODO()
+    }
+
     //////// other functions ////////
 
     fun tableFactory(): Array<CharArray> {
