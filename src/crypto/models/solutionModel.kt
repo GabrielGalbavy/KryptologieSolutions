@@ -76,7 +76,7 @@ abstract class Solver {
      * Masks all provided `Keys` for assigned `Placeholders`.
      * Must have `1:1 key-value relation`, as it is also used in reverse.
      */
-    protected val keywordsMap = mutableMapOf(
+    protected val keywordsExtMap = mapOf(
         '0' to "QNULAQ",
         '1' to "QIEDNAQ",
         '2' to "QDVAQ",
@@ -93,6 +93,16 @@ abstract class Solver {
     )
 
     /**
+     * Short version of keywordsExtMap.
+     * Masks all provided `Keys` for assigned `Placeholders`.
+     * Must have `1:1 key-value relation`, as it is also used in reverse.
+     */
+    protected val keywordsShortMap = mapOf(
+        ' ' to "QMEZERAQ",
+        '-' to "QCARKAQ",
+    )
+
+    /**
      * Takes `Open Text` as a `String` and turns it into `normalized text form` ready for encryption. Removes all `diacritics`,
      * `special characters`, and `masks defined characters` for `keywords` by using `keywordsMap.
      */
@@ -101,7 +111,7 @@ abstract class Solver {
         notCleanedMessage.forEach { character ->
             cleanMessage += when {
                 diacriticsMap.containsKey(character) -> diacriticsMap[character]
-                keywordsMap.containsKey(character) -> keywordsMap[character]
+                keywordsExtMap.containsKey(character) -> keywordsExtMap[character]
 
                 character in 'A'..'Z' || character in 'a'..'z' -> character.uppercaseChar()
 
@@ -119,7 +129,7 @@ abstract class Solver {
     protected fun unwashTheMessage(notCleanedMessage: String): String {
         var cleanMessage = notCleanedMessage
 
-        keywordsMap.forEach { set ->
+        keywordsExtMap.forEach { set ->
             cleanMessage = cleanMessage.replace(set.value, set.key.toString())
         }
         return cleanMessage
