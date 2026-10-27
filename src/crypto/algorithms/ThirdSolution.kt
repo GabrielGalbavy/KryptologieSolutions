@@ -90,19 +90,17 @@ class ThirdSolution : Solver() {
 
     private fun formFactory(input: String): List<List<String>>? {
         val key = keyword ?: return null
-        var remainingInput = input
         val output = mutableListOf<MutableList<String>>()
+        var pointer = 0
 
         key.forEach { ch ->
             output.add(mutableListOf(ch.toString()))
             // we create mutable list for each keyword character
         }
-        while (remainingInput.isNotEmpty()) {
+        while (pointer < input.length) {
             output.forEach { verticalColumn ->
-                if (remainingInput.isNotEmpty()) {
-                    verticalColumn.add(remainingInput.first().toString())
-                    remainingInput = remainingInput.drop(1)
-                } else verticalColumn.add(" ")
+                if (pointer < input.length) verticalColumn.add(input[pointer++].toString())
+                else verticalColumn.add(" ")
             }
         }
 
