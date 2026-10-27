@@ -106,12 +106,14 @@ abstract class Solver {
      * Takes `Open Text` as a `String` and turns it into `normalized text form` ready for encryption. Removes all `diacritics`,
      * `special characters`, and `masks defined characters` for `keywords` by using `keywordsMap.
      */
-    protected fun washTheMessage(notCleanedMessage: String): String {
+    protected fun washTheMessage(notCleanedMessage: String, extKeys: Boolean = true): String {
         var cleanMessage = ""
+        val keymap = if (extKeys) keywordsExtMap else keywordsShortMap
+
         notCleanedMessage.forEach { character ->
             cleanMessage += when {
                 diacriticsMap.containsKey(character) -> diacriticsMap[character]
-                keywordsExtMap.containsKey(character) -> keywordsExtMap[character]
+                keymap.containsKey(character) -> keymap[character]
 
                 character in 'A'..'Z' || character in 'a'..'z' -> character.uppercaseChar()
 
