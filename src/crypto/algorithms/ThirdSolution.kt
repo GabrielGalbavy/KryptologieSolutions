@@ -1,6 +1,7 @@
 ﻿package crypto.algorithms
 
 import crypto.models.Solver
+import kotlin.math.ceil
 import kotlin.random.Random
 
 class ThirdSolution : Solver() {
@@ -39,18 +40,25 @@ class ThirdSolution : Solver() {
     //////// cipher functions ////////
 
     override fun encrypt(input: String): String {
-        val filteredInput = actuallyIAmHereToInterpret(washTheMessage(input))
+        val extendedKeyMap = when (tableSize) {
+            TableSizes.SMALL -> true; TableSizes.LARGE -> false
+        }
         this.ourTable = tableFactory()
+
+        val filteredInput = actuallyIAmHereToInterpret(washTheMessage(input, extendedKeyMap))
+        println(filteredInput)
         val mappedMessage = mapMessage(filteredInput)
         val messageForm = formFactory(mappedMessage)
         val sortedForm = sortFormColumns(messageForm)
         var cipherText = extractMessage(sortedForm).replace(" ", "")
         cipherText = sliceTheCode(cipherText)
+        // too many variables, wasting RAM like it isn't worth more than gold right now
 
         return cipherText
     }
 
     override fun decrypt(input: String): String {
+        val formDepth = ceil((input.length / this.keyword.length).toDouble()).toInt()
         TODO("Not yet implemented")
     }
 
@@ -147,6 +155,28 @@ class ThirdSolution : Solver() {
 
     private fun sortFormColumns(input: List<List<String>>): List<List<String>> {
         return input.sortedBy { column -> column.first() }
+    }
+
+    private fun desortFormColumns(input: String, formDepth: Int): List<Array<String>> {
+        val resolvedForm = mutableListOf<Array<String>>()
+        val baseRowsCount = formDepth * this.keyword.length - input.length
+
+        for (i in 0..this.keyword.length - baseRowsCount) {
+            val tempArray = Array<String>(formDepth + 2) { "" }
+            resolvedForm.add(tempArray)
+        }
+        for (i in 0..baseRowsCount) {
+            val tempArray = Array<String>(formDepth + 1) { "" }
+            resolvedForm.add(tempArray)
+        }
+        this.keyword.forEachIndexed { index, ch ->
+            resolvedForm[index][0] = ch.toString()
+        }
+
+        resolvedForm.sortBy { column -> column.first() }
+
+// bad bad bad bad, rework tmrw
+        return resolvedForm
     }
 
     private fun extractMessage(input: List<List<String>>): String {
