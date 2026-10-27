@@ -144,6 +144,9 @@ class ThirdSolution : Solver() {
         return null
     }
 
+    private fun sortFormColumns(input: List<List<String>>): List<List<String>> {
+        return input.sortedBy { column -> column.first() }
+    }
 
     private fun extractMessage() {
         TODO("Not yet implemented")
