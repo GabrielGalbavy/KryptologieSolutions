@@ -148,8 +148,12 @@ class ThirdSolution : Solver() {
         return input.sortedBy { column -> column.first() }
     }
 
-    private fun extractMessage() {
-        TODO("Not yet implemented")
+    private fun extractMessage(input: List<List<String>>): String {
+        val output = StringBuilder()
+        for (column in input) {
+            output.append(column.joinToString()).append(" ")
+        }
+        return output.toString()
     }
 
     private fun actuallyIAmHereToInterpret(input: String): String {
