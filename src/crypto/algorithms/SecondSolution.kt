@@ -94,7 +94,7 @@ class SecondSolution : Solver() {
             // resolve if we have letter or a keyword in hands
             var normChar = when {
                 diacriticsMap.containsKey(ch) -> diacriticsMap[ch]
-                keywordsMap.containsKey(ch) -> keywordsMap[ch]
+                keywordsExtMap.containsKey(ch) -> keywordsExtMap[ch]
                 ch in 'A'..'Z' -> ch
                 else -> null
             }
