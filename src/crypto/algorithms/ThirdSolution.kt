@@ -14,7 +14,7 @@ class ThirdSolution : Solver() {
     //////// variables ////////
 
     var seed: Int = 123
-    var keyword: String? = null
+    var keyword: String = ""
     var ourTable: Array<CharArray>? = null
 
     var tableLanguage: Tables = Tables.CZ
@@ -24,9 +24,6 @@ class ThirdSolution : Solver() {
     val largeHeader = charArrayOf('A', 'D', 'F', 'G', 'V', 'X')
     val smallAlphabet: String = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     val largeAlphabet: String = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-
-    var smallTable: Array<CharArray> = Array(5) { CharArray(5) }
-    var bigTable: Array<CharArray> = Array(6) { CharArray(6) }
 
     enum class Tables {
         CZ, // masking W as V
@@ -38,10 +35,19 @@ class ThirdSolution : Solver() {
         LARGE // ADFGVX
     }
 
+
     //////// cipher functions ////////
 
     override fun encrypt(input: String): String {
-        TODO("Not yet implemented")
+        val filteredInput = actuallyIAmHereToInterpret(washTheMessage(input))
+        this.ourTable = tableFactory()
+        val mappedMessage = mapMessage(filteredInput)
+        val messageForm = formFactory(mappedMessage)
+        val sortedForm = sortFormColumns(messageForm)
+        var cipherText = extractMessage(sortedForm).replace(" ", "")
+        cipherText = sliceTheCode(cipherText)
+
+        return cipherText
     }
 
     override fun decrypt(input: String): String {
@@ -55,13 +61,13 @@ class ThirdSolution : Solver() {
 
     //////// Key-related functions ////////
 
-    public fun setKeyword(keyword: String) {
-        TODO()
-    }
-
-    private fun validateKeyword() {
-        TODO()
-    }
+//    public fun setKeyword(keyword: String) {
+//        TODO()
+//    }
+//
+//    private fun validateKeyword() {
+//        TODO()
+//    }
 
     //////// other functions ////////
 
@@ -96,8 +102,8 @@ class ThirdSolution : Solver() {
     }
 
 
-    private fun formFactory(input: String): List<List<String>>? {
-        val key = keyword ?: return null
+    private fun formFactory(input: String): List<List<String>> {
+        val key = keyword
         val output = mutableListOf<MutableList<String>>()
         var pointer = 0
 
@@ -115,20 +121,15 @@ class ThirdSolution : Solver() {
         return output
     }
 
-    private fun mapMessage(input: String, table: Array<CharArray>): String {
+    private fun mapMessage(input: String): String {
         val output = StringBuilder()
         val usableHeaders = when (this.tableSize) {
-            TableSizes.SMALL -> {
-                smallHeader
-            }
-
-            TableSizes.LARGE -> {
-                largeHeader
-            }
+            TableSizes.SMALL -> smallHeader
+            TableSizes.LARGE -> largeHeader
         }
 
         input.forEach { ch ->
-            val coords = locateTargetCoords(table, ch)
+            val coords = locateTargetCoords(this.ourTable!!, ch)
             if (coords != null) output.append(usableHeaders[coords.first]).append(usableHeaders[coords.second])
         }
         return output.toString()
@@ -151,20 +152,15 @@ class ThirdSolution : Solver() {
     private fun extractMessage(input: List<List<String>>): String {
         val output = StringBuilder()
         for (column in input) {
-            output.append(column.joinToString()).append(" ")
+            output.append(column.drop(1).joinToString(""))
         }
         return output.toString()
     }
 
     private fun actuallyIAmHereToInterpret(input: String): String {
         val output = when (tableLanguage) {
-            Tables.EN -> {
-                input.replace('J', 'I')
-            }
-
-            Tables.CZ -> {
-                input.replace('W', 'V')
-            }
+            Tables.EN -> input.replace('J', 'I')
+            Tables.CZ -> input.replace('W', 'V')
         }
         // masking letters could be elevated to dedicated table
         return output
