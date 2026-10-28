@@ -157,26 +157,33 @@ class ThirdSolution : Solver() {
         return input.sortedBy { column -> column.first() }
     }
 
-    private fun desortFormColumns(input: String, formDepth: Int): List<Array<String>> {
-        val resolvedForm = mutableListOf<Array<String>>()
-        val baseRowsCount = formDepth * this.keyword.length - input.length
-
-        for (i in 0..this.keyword.length - baseRowsCount) {
-            val tempArray = Array<String>(formDepth + 2) { "" }
-            resolvedForm.add(tempArray)
+    private fun desortFormColumns(cipherText: String): List<List<String>>? {
+        val key = keyword.ifEmpty { return null }
+        val c = key.length
+        val l = cipherText.length
+        val baseRows = l / c
+        val remainder = l % c
+        val indexedKey = key.withIndex().sortedWith(compareBy({ it.value }, { it.index }))
+        val sortedColumns = mutableListOf<MutableList<String>>()
+        var cipherIndex = 0
+        for ((origIndex, ch) in indexedKey) {
+            val colLength = if (origIndex < remainder) baseRows + 1 else baseRows
+            val colData = mutableListOf<String>()
+            colData.add(ch.toString())
+            repeat(colLength) {
+                if (cipherIndex < cipherText.length) {
+                    colData.add(cipherText[cipherIndex++].toString())
+                }
+            }
+            sortedColumns.add(colData)
         }
-        for (i in 0..baseRowsCount) {
-            val tempArray = Array<String>(formDepth + 1) { "" }
-            resolvedForm.add(tempArray)
-        }
-        this.keyword.forEachIndexed { index, ch ->
-            resolvedForm[index][0] = ch.toString()
+        val originalColumns = arrayOfNulls<MutableList<String>>(c)
+        for (i in sortedColumns.indices) {
+            val origIndex = indexedKey[i].index
+            originalColumns[origIndex] = sortedColumns[i]
         }
 
-        resolvedForm.sortBy { column -> column.first() }
-
-// bad bad bad bad, rework tmrw
-        return resolvedForm
+        return originalColumns.filterNotNull()
     }
 
     private fun extractMessage(input: List<List<String>>): String {
