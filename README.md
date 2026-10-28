@@ -26,6 +26,14 @@ A modular, dark-themed desktop application built with **Kotlin** and **Java Swin
   - Text Normalization & Filtering with smart separator insertion (X/Q)
   - Dynamic Key Processing & Keyword Mapping Support
   - Formatted Output chunked into 5-character blocks
+- **3. ADFG(V)X Cipher**
+  - Full support for encryption and decryption
+  - option between 5x5 and 6x6 grids
+  - Multi-Language Alphabet Support (English: J=I, Czech: W=V)
+  - Text Normalization & Filtering
+  - dynamic wildcard masking, including numbers in 5x5 grid mode
+  - seed based table generation
+  - Formatted Output chunked into 5-character blocks
 - more coming soon..
 
 ---
