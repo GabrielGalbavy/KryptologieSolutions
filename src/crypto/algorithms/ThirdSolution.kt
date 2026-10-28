@@ -186,6 +186,50 @@ class ThirdSolution : Solver() {
         return originalColumns.filterNotNull()
     }
 
+    private fun rebuildMessage(inputForm: List<List<String>>): String {
+        val output = StringBuilder()
+        val numCols = inputForm.size
+
+        val maxRows = inputForm.maxOfOrNull { it.size } ?: 0
+
+        for (rowIndex in 1..<maxRows) {
+            for (colIndex in 0..<numCols) {
+                val column = inputForm[colIndex]
+
+                if (rowIndex < column.size) {
+                    output.append(column[rowIndex])
+                }
+            }
+        }
+
+        return output.toString().trimEnd()
+    }
+
+    private fun resolveMessage(input: String): String {
+        val output = StringBuilder()
+        val cleanInput = input.replace("\\s+".toRegex(), "")
+        val inputPairs = cleanInput.chunked(2)
+
+        val usableHeaders = when (this.tableSize) {
+            TableSizes.SMALL -> smallHeader
+            TableSizes.LARGE -> largeHeader
+        }
+
+        for (chunk in inputPairs) {
+            if (chunk.length < 2) break
+
+            val x = usableHeaders.indexOf(chunk[0])
+            val y = usableHeaders.indexOf(chunk[1])
+
+            if (x != -1 && y != -1) {
+                output.append(this.ourTable!![x][y])
+            }
+        }
+
+        return output.toString()
+    }
+
+
     private fun extractMessage(input: List<List<String>>): String {
         val output = StringBuilder()
         for (column in input) {
