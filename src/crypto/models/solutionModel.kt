@@ -128,10 +128,10 @@ abstract class Solver {
      * Takes `Normalized text` as a `String` and turns it into `Open Text`.
      * Basically reverts changes done by `washTheMessage` function. Can not bring back removed characters like `"!@%^$*&"`.
      */
-    protected fun unwashTheMessage(notCleanedMessage: String): String {
+    protected fun unwashTheMessage(notCleanedMessage: String, extKeys: Boolean = true): String {
         var cleanMessage = notCleanedMessage
-
-        keywordsExtMap.forEach { set ->
+        val keymap = if (extKeys) keywordsExtMap else keywordsShortMap
+        keymap.forEach { set ->
             cleanMessage = cleanMessage.replace(set.value, set.key.toString())
         }
         return cleanMessage
