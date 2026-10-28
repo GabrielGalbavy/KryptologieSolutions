@@ -118,7 +118,7 @@ class ThirdSolution : Solver() {
     }
 
 
-    private fun formFactory(input: String): List<List<String>> {
+    fun formFactory(input: String): List<List<String>> {
         val key = keyword
         val output = mutableListOf<MutableList<String>>()
         var pointer = 0
@@ -161,11 +161,11 @@ class ThirdSolution : Solver() {
         return null
     }
 
-    private fun sortFormColumns(input: List<List<String>>): List<List<String>> {
+    fun sortFormColumns(input: List<List<String>>): List<List<String>> {
         return input.sortedBy { column -> column.first() }
     }
 
-    private fun desortFormColumns(cipherText: String): List<List<String>>? {
+    fun desortFormColumns(cipherText: String): List<List<String>>? {
         val key = keyword.ifEmpty { return null }
         val c = key.length
         val l = cipherText.length
