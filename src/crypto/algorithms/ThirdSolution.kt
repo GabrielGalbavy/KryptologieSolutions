@@ -1,7 +1,6 @@
 ﻿package crypto.algorithms
 
 import crypto.models.Solver
-import kotlin.math.ceil
 import kotlin.random.Random
 
 class ThirdSolution : Solver() {
@@ -46,7 +45,6 @@ class ThirdSolution : Solver() {
         this.ourTable = tableFactory()
 
         val filteredInput = actuallyIAmHereToInterpret(washTheMessage(input, extendedKeyMap))
-        println(filteredInput)
         val mappedMessage = mapMessage(filteredInput)
         val messageForm = formFactory(mappedMessage)
         val sortedForm = sortFormColumns(messageForm)
@@ -58,12 +56,22 @@ class ThirdSolution : Solver() {
     }
 
     override fun decrypt(input: String): String {
-        val formDepth = ceil((input.length / this.keyword.length).toDouble()).toInt()
-        TODO("Not yet implemented")
+        val extendedKeyMap = when (tableSize) {
+            TableSizes.SMALL -> true; TableSizes.LARGE -> false
+        }
+        val unitedInput = input.replace(" ", "")
+        val originalForm = desortFormColumns(unitedInput)
+        val rebuildMessage = rebuildMessage(originalForm!!)
+        val resolvedMessage = resolveMessage(rebuildMessage)
+        val openText = unwashTheMessage(resolvedMessage, extendedKeyMap)
+        return openText
     }
 
     override fun filter(input: String): String {
-        TODO("Not yet implemented")
+        val extendedKeyMap = when (tableSize) {
+            TableSizes.SMALL -> true; TableSizes.LARGE -> false
+        }
+        return actuallyIAmHereToInterpret(washTheMessage(input, extendedKeyMap))
     }
 
 
