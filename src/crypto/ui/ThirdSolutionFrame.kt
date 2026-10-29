@@ -272,7 +272,7 @@ class ThirdSolutionFrame : JFrame("ADFG(V)X CIPHER") {
 
     private fun bindEvents() {
         fun updateSolverParams() {
-            solver.keyword = txtKeyword.text.trim()
+            solver.keyword = solver.filter(txtKeyword.text.trim())
             solver.seed = txtSeed.text.toIntOrNull() ?: 123
             solver.tableSize = if (btnSmall.isSelected) ThirdSolution.TableSizes.SMALL else ThirdSolution.TableSizes.LARGE
             solver.tableLanguage = if (btnCzech.isSelected) ThirdSolution.Tables.CZ else ThirdSolution.Tables.EN

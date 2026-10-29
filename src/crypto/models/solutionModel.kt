@@ -117,7 +117,7 @@ abstract class Solver {
 
                 character in 'A'..'Z' || character in 'a'..'z' -> character.uppercaseChar()
 
-                !extKeys && character in '1'..'9' -> character // we treat numbers as valid chars
+                !extKeys && character in '0'..'9' -> character // we treat numbers as valid chars
 
                 // drop anything else
                 else -> ""

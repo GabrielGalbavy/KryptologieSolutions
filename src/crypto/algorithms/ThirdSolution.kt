@@ -77,13 +77,7 @@ class ThirdSolution : Solver() {
 
     //////// Key-related functions ////////
 
-//    public fun setKeyword(keyword: String) {
-//        TODO()
-//    }
-//
-//    private fun validateKeyword() {
-//        TODO()
-//    }
+    // keyword is already formated on frontend
 
     //////// other functions ////////
 
@@ -252,6 +246,7 @@ class ThirdSolution : Solver() {
             Tables.CZ -> input.replace('W', 'V')
         }
         // masking letters could be elevated to dedicated table
+            // including this function
         return output
     }
 }
