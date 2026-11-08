@@ -2,6 +2,7 @@
 
 import crypto.models.Solver
 import java.math.BigInteger
+import java.security.SecureRandom
 
 class FourthSolution : Solver() {
     override val name: String = "RSA šifra"
@@ -44,7 +45,23 @@ class FourthSolution : Solver() {
 
     //////// other functions ////////
 
-    private fun rabinMiller(){
+    private fun rabinMiller(n: BigInteger): Boolean {
         TODO("required for digital signature down the road")
+    }
+
+    private fun setRandomPrimes() {
+        this.p = primeGenerator()
+        this.q = primeGenerator()
+    }
+
+    private fun primeGenerator(): BigInteger {
+        val tailSet = listOf(1, 3, 5, 7, 9)
+        val source = SecureRandom()
+
+        val first = (source.nextInt(9) + 1).toString() // first number cant be 0
+        val body = (1..this.primeLength - 2).map { source.nextInt(10) }.joinToString("")
+        val last = tailSet[source.nextInt(tailSet.size)].toString() // number must be odd
+
+        return "$first$body$last".toBigInteger() // [1-9] + 12..n digits + odd number
     }
 }
