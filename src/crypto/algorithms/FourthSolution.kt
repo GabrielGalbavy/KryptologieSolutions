@@ -45,8 +45,56 @@ class FourthSolution : Solver() {
 
     //////// other functions ////////
 
-    private fun rabinMiller(n: BigInteger): Boolean {
-        TODO("required for digital signature down the road")
+    private fun rabinMillerTest(testedNumber: BigInteger): Boolean {
+        /**
+         * step 1.) find n-1 = 2^k * m
+         */
+        val nMinusOne = testedNumber.subtract(BigInteger.ONE)
+        var m: BigInteger = nMinusOne
+        val source = SecureRandom()
+        var s = 0
+
+        while (m.remainder(BigInteger.TWO) == BigInteger.ZERO) { // dividing until we get not whole number
+            m = m.divide(BigInteger.TWO)
+            s++
+        }
+
+        for (i in 1..k) {
+            /**
+             * step 2.) pick value witness, where witness: 1 < a < n-1
+             */
+            var witness: BigInteger // a number which considers n is prime/composite number
+
+            do {
+                witness = BigInteger(testedNumber.bitLength(), source)
+                // generates random number with same bit length as n
+            } while (witness <= BigInteger.ONE || witness >= testedNumber.subtract(BigInteger.ONE))
+
+            /** step 3.) b = a^m mod(n) */
+
+            var b = witness.modPow(m, testedNumber)
+
+            if (b == BigInteger.ONE || b == nMinusOne) {
+                continue // testedNumber is considered prime for provided witness
+            }
+            /** b is neither 1/-1, running deeper test loop */
+            var isComposite = true // testedNumber is considered composite until proven otherwise
+
+            for (r in 1..<s) {
+                b = b.modPow(BigInteger.TWO, testedNumber)
+                if (b == BigInteger.ONE) {
+                    return false // we can definitely say testedNumber is composite
+                } else if (b == nMinusOne) {
+                    isComposite = false
+                    break // testedNumber is considered prime for provided witness
+                }
+            }
+
+            if (isComposite) {
+                return false
+            }
+        }
+        return true // testedNumber is definitely maybe prime
     }
 
     private fun setRandomPrimes(mode: Int) {
