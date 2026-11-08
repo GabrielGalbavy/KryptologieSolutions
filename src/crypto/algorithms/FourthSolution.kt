@@ -39,28 +39,32 @@ class FourthSolution : Solver() {
 
     //////// Key-related functions ////////
 
-     fun generateKeys() {
+    fun generateKeys() {
         var firstNumberValid = false
         var secondNumberValid = false
-
+        var testedKeys = 0
         do {
             if (!firstNumberValid) {
                 setRandomPrimes(1)
+                testedKeys++
             }
             if (!secondNumberValid) {
                 setRandomPrimes(2)
+                testedKeys++
             }
 
             firstNumberValid = rabinMillerTest(p!!)
             secondNumberValid = rabinMillerTest(q!!)
 
             if (firstNumberValid && secondNumberValid && p == q) {
-                secondNumberValid = false // numbers must be different
+                secondNumberValid = false // numbers must be different, chance of hitting this is astronomical
+                testedKeys++
             }
         } while (!firstNumberValid || !secondNumberValid) // keep generating until we have two usable numbers
 
         println(p)
         println(q)
+        println(testedKeys)
     }
 
     //////// other functions ////////

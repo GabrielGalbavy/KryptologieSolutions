@@ -1,6 +1,7 @@
 package crypto
 
 import crypto.algorithms.FirstSolution
+import crypto.algorithms.FourthSolution
 import crypto.algorithms.SecondSolution
 import crypto.algorithms.ThirdSolution
 import crypto.models.Solver
@@ -14,5 +15,8 @@ val availableCiphers = availableSolutions.map { it.whoAmI() }.toTypedArray()
 
 
 fun main() {
+
+    FourthSolution().generateKeys()
+
     SwingUtilities.invokeLater { val window = WelcomeFrame(); window.isVisible = true }; return
 }
