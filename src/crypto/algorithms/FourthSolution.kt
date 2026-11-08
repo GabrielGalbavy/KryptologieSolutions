@@ -49,9 +49,14 @@ class FourthSolution : Solver() {
         TODO("required for digital signature down the road")
     }
 
-    private fun setRandomPrimes() {
-        this.p = primeGenerator()
-        this.q = primeGenerator()
+    private fun setRandomPrimes(mode: Int) {
+        when (mode) {
+            1 -> p = primeGenerator()
+            2 -> q = primeGenerator()
+            3 -> {
+                p = primeGenerator(); q = primeGenerator()
+            }
+        }
     }
 
     private fun primeGenerator(): BigInteger {
@@ -59,7 +64,7 @@ class FourthSolution : Solver() {
         val source = SecureRandom()
 
         val first = (source.nextInt(9) + 1).toString() // first number cant be 0
-        val body = (1..this.primeLength - 2).map { source.nextInt(10) }.joinToString("")
+        val body = (1..(primeLength - 2)).map { source.nextInt(10) }.joinToString("")
         val last = tailSet[source.nextInt(tailSet.size)].toString() // number must be odd
 
         return "$first$body$last".toBigInteger() // [1-9] + 12..n digits + odd number
