@@ -104,6 +104,24 @@ class FourthSolution : Solver() {
         return bitStream
     }
 
+    fun bigIntCaster(chunks: List<String>): MutableList<BigInteger> {
+        val bigIntStream: MutableList<BigInteger> = mutableListOf()
+        chunks.forEach { chunk ->
+            bigIntStream.add(chunk.toBigInteger(2)) // we are working with bin numbers
+        }
+        return bigIntStream
+    }
+
+    private fun setRandomPrimes(mode: Int = 3) {
+        when (mode) {
+            1 -> p = primeGenerator()
+            2 -> q = primeGenerator()
+            3 -> {
+                p = primeGenerator(); q = primeGenerator()
+            }
+        }
+    }
+
 
     private fun rabinMillerTest(testedNumber: BigInteger): Boolean {
         /**
