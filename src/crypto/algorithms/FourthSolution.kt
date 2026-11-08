@@ -14,12 +14,24 @@ class FourthSolution : Solver() {
 
     //////// variables ////////
 
+    // keys
+    var publicKey: Pair<BigInteger, BigInteger>? = null
+    var privateKey: Pair<BigInteger, BigInteger>? = null
+
+    // key components
+    var n: BigInteger? = null
+    var d: BigInteger? = null
+    var e: BigInteger = 65537.toBigInteger()
+
+    // prime numbers
     var p: BigInteger? = null
     var q: BigInteger? = null
-
-    var e: BigInteger = 65537.toBigInteger()
-    val k: Int = 40 // Rabin Miller test depth, chance of false right is 4^-40 = enough
     var primeLength = 14 // amount of digits in prime number, 14 is minimum
+    val messageChuckSize = 8
+    val bitsPerChar = 8
+    val paddingChar = "00000000" // in case the last chunk is not 8 chars long
+
+    val k: Int = 128 // Rabin Miller test depth, chance of false right is 4^-128 = enough
 
 
     //////// cipher functions ////////
