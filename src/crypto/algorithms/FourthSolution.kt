@@ -74,9 +74,12 @@ class FourthSolution : Solver() {
             }
         } while (!firstNumberValid || !secondNumberValid) // keep generating until we have two usable numbers
 
-        println(p)
-        println(q)
-        println(testedKeys)
+        n = p!!.multiply(q!!) // n = p x q
+        val phi = p!!.subtract(BigInteger.ONE).multiply(q!!.subtract(BigInteger.ONE))
+        d = e.modInverse(phi)
+
+        publicKey = Pair(n!!, e)
+        privateKey = Pair(n!!, d!!)
     }
 
     //////// other functions ////////
