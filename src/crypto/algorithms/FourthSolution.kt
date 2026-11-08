@@ -39,8 +39,28 @@ class FourthSolution : Solver() {
 
     //////// Key-related functions ////////
 
-    private fun generateKeys(): Pair<BigInteger, BigInteger> {
-        TODO("damn")
+     fun generateKeys() {
+        var firstNumberValid = false
+        var secondNumberValid = false
+
+        do {
+            if (!firstNumberValid) {
+                setRandomPrimes(1)
+            }
+            if (!secondNumberValid) {
+                setRandomPrimes(2)
+            }
+
+            firstNumberValid = rabinMillerTest(p!!)
+            secondNumberValid = rabinMillerTest(q!!)
+
+            if (firstNumberValid && secondNumberValid && p == q) {
+                secondNumberValid = false // numbers must be different
+            }
+        } while (!firstNumberValid || !secondNumberValid) // keep generating until we have two usable numbers
+
+        println(p)
+        println(q)
     }
 
     //////// other functions ////////
@@ -97,7 +117,7 @@ class FourthSolution : Solver() {
         return true // testedNumber is definitely maybe prime
     }
 
-    private fun setRandomPrimes(mode: Int) {
+    private fun setRandomPrimes(mode: Int = 3) {
         when (mode) {
             1 -> p = primeGenerator()
             2 -> q = primeGenerator()
