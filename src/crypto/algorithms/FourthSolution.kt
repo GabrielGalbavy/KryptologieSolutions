@@ -84,6 +84,27 @@ class FourthSolution : Solver() {
 
     //////// other functions ////////
 
+    fun bitCaster(chunks: List<String>): MutableList<String> {
+        val bitStream: MutableList<String> = mutableListOf()
+
+        chunks.forEach { chunk ->
+            val chunkInBits = StringBuilder()
+
+            chunk.forEach { char ->
+                chunkInBits.append(char.code.toString(2).padStart(bitsPerChar, '0'))
+            }
+
+            if (chunk.length < messageChuckSize) {
+                (0..<(messageChuckSize - chunk.length)).forEach { _ ->
+                    chunkInBits.append(paddingChar)
+                }
+            }
+            bitStream.add(chunkInBits.toString())
+        }
+        return bitStream
+    }
+
+
     private fun rabinMillerTest(testedNumber: BigInteger): Boolean {
         /**
          * step 1.) find n-1 = 2^k * m
