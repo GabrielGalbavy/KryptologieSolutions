@@ -122,6 +122,16 @@ class FourthSolution : Solver() {
         }
     }
 
+    private fun primeGenerator(): BigInteger {
+        val tailSet = listOf(1, 3, 5, 7, 9)
+        val source = SecureRandom()
+
+        val first = (source.nextInt(9) + 1).toString() // first number cant be 0
+        val body = (1..(primeLength - 2)).map { source.nextInt(10) }.joinToString("")
+        val last = tailSet[source.nextInt(tailSet.size)].toString() // number must be odd
+
+        return "$first$body$last".toBigInteger() // [1-9] + 12..n digits + odd number
+    }
 
     private fun rabinMillerTest(testedNumber: BigInteger): Boolean {
         /**
