@@ -13,7 +13,12 @@ class FourthSolution : Solver() {
 
     //////// variables ////////
 
+    var p: BigInteger? = null
+    var q: BigInteger? = null
 
+    var e: BigInteger = 65537.toBigInteger()
+    val k: Int = 40 // Rabin Miller test depth, chance of false right is 4^-40 = enough
+    var primeLength = 14 // amount of digits in prime number, 14 is minimum
 
 
     //////// cipher functions ////////
