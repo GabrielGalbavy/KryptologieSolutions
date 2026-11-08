@@ -16,7 +16,13 @@ val availableCiphers = availableSolutions.map { it.whoAmI() }.toTypedArray()
 
 fun main() {
 
-    FourthSolution().generateKeys()
+    val x = FourthSolution()
+    x.generateKeys()
+
+    println(x.encrypt("Let me speak to the ppl"))
+
+    println("public key:" + x.publicKey)
+    println("private key:" + x.privateKey)
 
     SwingUtilities.invokeLater { val window = WelcomeFrame(); window.isVisible = true }; return
 }
