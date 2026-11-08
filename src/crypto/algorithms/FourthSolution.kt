@@ -37,7 +37,18 @@ class FourthSolution : Solver() {
     //////// cipher functions ////////
 
     override fun encrypt(input: String): String {
-        TODO("Not yet implemented")
+        if (publicKey != null && privateKey != null) {
+            val chunkedInput = input.chunked(messageChuckSize)
+            val chunkedInputBin = bitCaster(chunkedInput)
+            val chunkedInputBigInt = bigIntCaster(chunkedInputBin)
+
+            val encryptedSets = chunkedInputBigInt.map { m ->
+                m.modPow(publicKey!!.second, publicKey!!.first)
+            }
+
+            return encryptedSets.joinToString(" ")
+        }
+        return ""
     }
 
     override fun decrypt(input: String): String {
@@ -45,7 +56,7 @@ class FourthSolution : Solver() {
     }
 
     override fun filter(input: String): String {
-        TODO("Not yet implemented, may not be implemented at all as we use UTF-8 encoding")
+        TODO("Not yet implemented, may not be implemented at all as we can encode virtually anything")
     }
 
 
@@ -81,6 +92,7 @@ class FourthSolution : Solver() {
         publicKey = Pair(n!!, e)
         privateKey = Pair(n!!, d!!)
     }
+
 
     //////// other functions ////////
 
@@ -147,7 +159,7 @@ class FourthSolution : Solver() {
             s++
         }
 
-        for (i in 1..k) {
+        for (i in 1..k) { // could be .forEach{} but then it looks bad
             /**
              * step 2.) pick value witness, where witness: 1 < a < n-1
              */
@@ -183,26 +195,5 @@ class FourthSolution : Solver() {
             }
         }
         return true // testedNumber is definitely maybe prime
-    }
-
-    private fun setRandomPrimes(mode: Int = 3) {
-        when (mode) {
-            1 -> p = primeGenerator()
-            2 -> q = primeGenerator()
-            3 -> {
-                p = primeGenerator(); q = primeGenerator()
-            }
-        }
-    }
-
-    private fun primeGenerator(): BigInteger {
-        val tailSet = listOf(1, 3, 5, 7, 9)
-        val source = SecureRandom()
-
-        val first = (source.nextInt(9) + 1).toString() // first number cant be 0
-        val body = (1..(primeLength - 2)).map { source.nextInt(10) }.joinToString("")
-        val last = tailSet[source.nextInt(tailSet.size)].toString() // number must be odd
-
-        return "$first$body$last".toBigInteger() // [1-9] + 12..n digits + odd number
     }
 }
