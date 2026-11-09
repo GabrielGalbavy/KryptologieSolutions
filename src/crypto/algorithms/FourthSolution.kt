@@ -36,6 +36,8 @@ class FourthSolution : Solver() {
 
     var encodingStandard = EncodingTypes.UTF8
         private set
+    var filerForUTF8 = true // idk if this is required
+        private set
     var primeLength = 14 // amount of digits in prime number, 14 is minimum
     var messageChuckSize = 8
         private set
@@ -54,6 +56,11 @@ class FourthSolution : Solver() {
 
     override fun encrypt(input: String): String {
         if (remotePublicKey != null) {
+            var input = input
+            if (filerForUTF8) {
+                input = washTheMessage(input)
+            }
+
             val chunkedInput = input.chunked(messageChuckSize)
             val chunkedInputBin = bitCaster(chunkedInput)
 
@@ -149,7 +156,7 @@ class FourthSolution : Solver() {
                 encodingStandard = EncodingTypes.UTF8
                 bitsPerChar = 8
                 messageChuckSize = 8
-
+                filerForUTF8 = true
                 paddingCharStr = "00000000"
             }
 
@@ -157,6 +164,7 @@ class FourthSolution : Solver() {
                 encodingStandard = EncodingTypes.UTF16
                 bitsPerChar = 16
                 messageChuckSize = 4
+                filerForUTF8 = false
                 paddingCharStr = "0000000000000000"
             }
         }
