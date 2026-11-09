@@ -356,11 +356,3 @@ class FourthSolutionFrame : JFrame("RSA Šifra") {
         return null
     }
 }
-
-fun main() {
-    try {
-        UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName())
-    } catch (e: Exception) {
-    }
-    SwingUtilities.invokeLater { FourthSolutionFrame().isVisible = true }
-}
