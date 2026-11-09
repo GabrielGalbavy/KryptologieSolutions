@@ -32,8 +32,8 @@ class FourthSolution : Solver() {
     val messageChuckSize = 8
     val bitsPerChar = 8
     val bitsPerChunk = messageChuckSize * bitsPerChar
-    val paddingChar = "00000000" // in case the last chunk is not 8 chars long
-
+    val paddingCharStr = "00000000" // in case the last chunk is not 8 chars long
+    val paddingCharCh = '\u0000'
     val k: Int = 128 // Rabin Miller test depth, chance of false right is 4^-128 = enough
 
 
@@ -71,7 +71,7 @@ class FourthSolution : Solver() {
             decryptedChunkedInputBin.joinToString("").chunked(bitsPerChar).forEach { binChar ->
                 val ch = binChar.toInt(2).toChar()
 
-                if (ch.code != paddingChar.toInt()) { // filtering out end padding
+                if (ch != paddingCharCh) { // filtering out end padding
                     decryptedMessage.append(ch)
                 }
             }
@@ -137,7 +137,7 @@ class FourthSolution : Solver() {
 
             if (chunk.length < messageChuckSize) {
                 (0..<(messageChuckSize - chunk.length)).forEach { _ ->
-                    chunkInBits.append(paddingChar)
+                    chunkInBits.append(paddingCharStr)
                 }
             }
             bitStream.add(chunkInBits.toString())
