@@ -9,20 +9,11 @@ import crypto.ui.WelcomeFrame
 import javax.swing.SwingUtilities
 
 val availableSolutions: Array<Solver> = arrayOf(
-    FirstSolution(), SecondSolution(), ThirdSolution()
+    FirstSolution(), SecondSolution(), ThirdSolution(), FourthSolution()
 )
 val availableCiphers = availableSolutions.map { it.whoAmI() }.toTypedArray()
 
 
 fun main() {
-
-    val x = FourthSolution()
-    x.generateKeys()
-
-    println(x.encrypt("Let me speak to the ppl"))
-
-    println("public key:" + x.publicKey)
-    println("private key:" + x.privateKey)
-
     SwingUtilities.invokeLater { val window = WelcomeFrame(); window.isVisible = true }; return
 }
