@@ -313,22 +313,27 @@ class FourthSolutionFrame : JFrame("RSA Šifra") {
         kGbc.gridx = 1; kGbc.weightx = 0.7
         panel.add(JTextField().apply { name = "localPrivateNField"; isEditable = false }, kGbc)
 
+        // --- FIX PRE PRIVATE EXPONENT POLE A SHOW TLAČIDLO ---
         val privateWrapper = JPanel(BorderLayout(5, 0)).apply { isOpaque = false }
 
-        // Vytvoríme JPasswordField s fixnou šírkou, aby sa pri prepínaniu textu hýbalo pole
-        val privateField = JPasswordField().apply {
-            name = "localPrivateDField"
-            isEditable = false
-            // Nastavíme pevnú šírku, napr. 170px, výška kopíruje štandard (cca 28px)
-            preferredSize = Dimension(170, 28)
+        val privateField = object : JPasswordField() {
+            init {
+                name = "localPrivateDField"
+                isEditable = false
+            }
+            // Zafixujeme šírku komponentu, aby sa nemigroval podľa dĺžky textu
+            override fun getPreferredSize(): Dimension {
+                val d = super.getPreferredSize()
+                return Dimension(d.width, d.height)
+            }
         }
         privateWrapper.add(privateField, BorderLayout.CENTER)
 
-        // Tlačidlo SHOW pre odhalenie privátneho kľúča
         val toggleKeyBtn = createFlatButton("SHOW", Color.decode("#8A2BE2"), Color.WHITE).apply {
             name = "toggleKeyBtn"
-            margin = Insets(0, 8, 0, 8)
             font = Font("Monospaced", Font.BOLD, 12)
+            // Dáme tlačidlu fixnú šírku, aby nezmenilo rozmer wrapperu
+            preferredSize = Dimension(75, 28)
         }
         privateWrapper.add(toggleKeyBtn, BorderLayout.EAST)
 

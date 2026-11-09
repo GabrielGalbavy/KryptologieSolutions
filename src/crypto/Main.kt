@@ -13,7 +13,9 @@ val availableSolutions: Array<Solver> = arrayOf(
 )
 val availableCiphers = availableSolutions.map { it.whoAmI() }.toTypedArray()
 
-
-fun main() {
-    SwingUtilities.invokeLater { val window = WelcomeFrame(); window.isVisible = true }; return
+fun main() { // This is where the fun begins >>
+    SwingUtilities.invokeLater {
+        val window = WelcomeFrame(); window.isVisible = true
+    }
+    return
 }
