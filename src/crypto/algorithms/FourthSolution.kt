@@ -15,8 +15,10 @@ class FourthSolution : Solver() {
     //////// variables ////////
 
     // keys
-    var publicKey: Pair<BigInteger, BigInteger>? = null
-    var privateKey: Pair<BigInteger, BigInteger>? = null
+    var localPublicKey: Pair<BigInteger, BigInteger>? = null
+    var localPrivateKey: Pair<BigInteger, BigInteger>? = null
+
+    var remotePublicKey: Pair<BigInteger, BigInteger>? = null
 
     // key components
     var n: BigInteger? = null
