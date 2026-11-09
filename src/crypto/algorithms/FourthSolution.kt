@@ -31,6 +31,7 @@ class FourthSolution : Solver() {
     var primeLength = 14 // amount of digits in prime number, 14 is minimum
     val messageChuckSize = 8
     val bitsPerChar = 8
+    val bitsPerChunk = messageChuckSize * bitsPerChar
     val paddingChar = "00000000" // in case the last chunk is not 8 chars long
 
     val k: Int = 128 // Rabin Miller test depth, chance of false right is 4^-128 = enough
@@ -39,13 +40,14 @@ class FourthSolution : Solver() {
     //////// cipher functions ////////
 
     override fun encrypt(input: String): String {
-        if (publicKey != null && privateKey != null) {
+        if (remotePublicKey != null) {
             val chunkedInput = input.chunked(messageChuckSize)
             val chunkedInputBin = bitCaster(chunkedInput)
+            println(chunkedInputBin)
             val chunkedInputBigInt = bigIntCaster(chunkedInputBin)
 
             val encryptedSets = chunkedInputBigInt.map { m ->
-                m.modPow(publicKey!!.second, publicKey!!.first)
+                m.modPow(remotePublicKey!!.second, remotePublicKey!!.first)
             }
 
             return encryptedSets.joinToString(" ")
@@ -54,15 +56,33 @@ class FourthSolution : Solver() {
     }
 
     override fun decrypt(input: String): String {
-        TODO("Not yet implemented")
+        if (localPrivateKey != null) {
+            val encryptedChunkedInputBigInt = input.split(" ").map { it.toBigInteger() }
+            val decryptedChunkedInputBigInt = encryptedChunkedInputBigInt.map { c ->
+                c.modPow(localPrivateKey!!.second, localPrivateKey!!.first)
+            }
+            val decryptedChunkedInputBin = decryptedChunkedInputBigInt.map { it.toString(2) }.toMutableList()
+            decryptedChunkedInputBin[0] = decryptedChunkedInputBin.first().padStart(bitsPerChunk, '0')
+
+            val decryptedMessage = StringBuilder()
+
+            decryptedChunkedInputBin.forEach { binChunk ->
+                binChunk.chunked(bitsPerChar).forEach { binChar ->
+                    decryptedMessage.append(binChar.toInt(2).toChar().toString())
+                }
+            }
+            return decryptedMessage.toString()
+        }
+        return ""
     }
+
 
     override fun filter(input: String): String {
         TODO("Not yet implemented, may not be implemented at all as we can encode virtually anything")
     }
 
 
-    //////// Key-related functions ////////
+//////// Key-related functions ////////
 
     fun generateKeys() {
         var firstNumberValid = false
@@ -91,12 +111,12 @@ class FourthSolution : Solver() {
         val phi = p!!.subtract(BigInteger.ONE).multiply(q!!.subtract(BigInteger.ONE))
         d = e.modInverse(phi)
 
-        publicKey = Pair(n!!, e)
-        privateKey = Pair(n!!, d!!)
+        localPublicKey = Pair(n!!, e)
+        localPrivateKey = Pair(n!!, d!!)
     }
 
 
-    //////// other functions ////////
+//////// other functions ////////
 
     fun bitCaster(chunks: List<String>): MutableList<String> {
         val bitStream: MutableList<String> = mutableListOf()
@@ -164,6 +184,7 @@ class FourthSolution : Solver() {
         for (i in 1..k) { // could be .forEach{} but then it looks bad
             /**
              * step 2.) pick value witness, where witness: 1 < a < n-1
+             * variables naming is totally random stitched from multiple sources
              */
             var witness: BigInteger // a number which considers n is prime/composite number
 
