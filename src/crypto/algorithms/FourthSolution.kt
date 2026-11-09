@@ -172,6 +172,12 @@ class FourthSolution : Solver() {
         return true
     }
 
+    /**
+     * Takes chunks of message and transforms them into their binary representation.
+     *
+     * Frontal padding is applied so each char is the same length defined by `bitsPerChar length`
+     * All `chars` which are `out of range` of `defined bitsPerChar length` will be masked for `'?'`
+     */
     private fun bitCaster(chunks: List<String>): MutableList<String> {
         val bitStream: MutableList<String> = mutableListOf()
         val placeholderChar = '?'.code.toString(2).padStart(bitsPerChar, '0')
@@ -196,6 +202,9 @@ class FourthSolution : Solver() {
         return bitStream
     }
 
+    /**
+     * Essentially the same thing as `bitCaster()`, but transforms `binary numbers` for their `Big Integer` representation.
+     */
     private fun bigIntCaster(chunks: List<String>): MutableList<BigInteger> {
         val bigIntStream: MutableList<BigInteger> = mutableListOf()
         chunks.forEach { chunk ->
@@ -241,7 +250,7 @@ class FourthSolution : Solver() {
 
         for (i in 1..k) { // could be .forEach{} but then it looks bad
             /**
-             * step 2.) pick value witness, where witness: 1 < a < n-1
+             * step 2.) pick value witness, where witness: 1 < witness < n-1
              * variables naming is totally random stitched from multiple sources
              */
             var witness: BigInteger // a number which considers n is prime/composite number
