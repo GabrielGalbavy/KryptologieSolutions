@@ -43,7 +43,7 @@ class FourthSolution : Solver() {
         if (remotePublicKey != null) {
             val chunkedInput = input.chunked(messageChuckSize)
             val chunkedInputBin = bitCaster(chunkedInput)
-            println(chunkedInputBin)
+
             val chunkedInputBigInt = bigIntCaster(chunkedInputBin)
 
             val encryptedSets = chunkedInputBigInt.map { m ->
@@ -61,16 +61,23 @@ class FourthSolution : Solver() {
             val decryptedChunkedInputBigInt = encryptedChunkedInputBigInt.map { c ->
                 c.modPow(localPrivateKey!!.second, localPrivateKey!!.first)
             }
-            val decryptedChunkedInputBin = decryptedChunkedInputBigInt.map { it.toString(2) }.toMutableList()
-            decryptedChunkedInputBin[0] = decryptedChunkedInputBin.first().padStart(bitsPerChunk, '0')
+            val decryptedChunkedInputBin = decryptedChunkedInputBigInt.map {
+                it.toString(2).padStart(bitsPerChunk, '0')
+            }.toMutableList()
+
 
             val decryptedMessage = StringBuilder()
 
-            decryptedChunkedInputBin.forEach { binChunk ->
-                binChunk.chunked(bitsPerChar).forEach { binChar ->
-                    decryptedMessage.append(binChar.toInt(2).toChar().toString())
+            decryptedChunkedInputBin.joinToString("").chunked(bitsPerChar).forEach { binChar ->
+                val ch = binChar.toInt(2).toChar()
+
+                if (ch.code != paddingChar.toInt()) { // filtering out end padding
+                    decryptedMessage.append(ch)
                 }
             }
+
+            println(decryptedChunkedInputBin.joinToString("").chunked(bitsPerChar).joinToString(" "))
+
             return decryptedMessage.toString()
         }
         return ""
