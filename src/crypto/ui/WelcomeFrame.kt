@@ -1,6 +1,7 @@
 ﻿package crypto.ui
 
 import crypto.availableCiphers
+import crypto.gui.*
 import java.awt.*
 import javax.swing.*
 import javax.swing.event.PopupMenuEvent
@@ -119,6 +120,12 @@ class WelcomeFrame : JFrame("Crypto Solver") {
 
                 2 -> {
                     val solutionFrame = ThirdSolutionFrame()
+                    dispose()
+                    solutionFrame.isVisible = true
+                }
+
+                3 -> {
+                    val solutionFrame = FourthSolutionFrame()
                     dispose()
                     solutionFrame.isVisible = true
                 }
