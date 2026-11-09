@@ -14,10 +14,13 @@ class FourthSolution : Solver() {
 
     //////// variables ////////
 
+    enum class EncodingTypes {
+        UTF8, UTF16
+    }
+
     // keys
     var localPublicKey: Pair<BigInteger, BigInteger>? = null
     var localPrivateKey: Pair<BigInteger, BigInteger>? = null
-
     var remotePublicKey: Pair<BigInteger, BigInteger>? = null
 
     // key components
@@ -28,16 +31,26 @@ class FourthSolution : Solver() {
     // prime numbers
     var p: BigInteger? = null
     var q: BigInteger? = null
+
+    // encoding params
+
+    var encodingStandard = EncodingTypes.UTF8
+        private set
     var primeLength = 14 // amount of digits in prime number, 14 is minimum
-    val messageChuckSize = 8
-    val bitsPerChar = 8
-    val bitsPerChunk = messageChuckSize * bitsPerChar
-    val paddingCharStr = "00000000" // in case the last chunk is not 8 chars long
+    var messageChuckSize = 8
+        private set
+    var bitsPerChar = 8
+        private set
+    var bitsPerChunk = messageChuckSize * bitsPerChar // should be always 64
+        private set
+    var paddingCharStr = "00000000" // in case the last chunk is not 8 chars long
+        private set
     val paddingCharCh = '\u0000'
-    val k: Int = 128 // Rabin Miller test depth, chance of false right is 4^-128 = enough
+
+    val k: Int = 128 // Rabin-Miller test depth, chance of false right is 4^-128 = enough
 
 
-    //////// cipher functions ////////
+//////// cipher functions ////////
 
     override fun encrypt(input: String): String {
         if (remotePublicKey != null) {
@@ -124,6 +137,27 @@ class FourthSolution : Solver() {
 
 
 //////// other functions ////////
+
+    fun setEncodingType(input: EncodingTypes): Boolean {
+        when (input) {
+            EncodingTypes.UTF8 -> {
+                encodingStandard = EncodingTypes.UTF8
+                bitsPerChar = 8
+                messageChuckSize = 8
+
+                paddingCharStr = "00000000"
+            }
+
+            EncodingTypes.UTF16 -> {
+                encodingStandard = EncodingTypes.UTF16
+                bitsPerChar = 16
+                messageChuckSize = 4
+                paddingCharStr = "0000000000000000"
+            }
+        }
+        bitsPerChunk = messageChuckSize * bitsPerChar
+        return true
+    }
 
     fun bitCaster(chunks: List<String>): MutableList<String> {
         val bitStream: MutableList<String> = mutableListOf()
