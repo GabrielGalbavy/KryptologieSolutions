@@ -137,9 +137,14 @@ class FourthSolution : Solver() {
 
 
 //////// other functions ////////
-
-    fun setEncodingType(input: EncodingTypes): Boolean {
-        when (input) {
+    /**
+     * Switches whole backend logic to support selected encoding standard
+     *
+     * @param option Anything from `EncodingTypes enum class`
+     * @return `true` if successful
+     */
+    fun setEncodingType(option: EncodingTypes): Boolean {
+        when (option) {
             EncodingTypes.UTF8 -> {
                 encodingStandard = EncodingTypes.UTF8
                 bitsPerChar = 8
@@ -159,7 +164,7 @@ class FourthSolution : Solver() {
         return true
     }
 
-    fun bitCaster(chunks: List<String>): MutableList<String> {
+    private fun bitCaster(chunks: List<String>): MutableList<String> {
         val bitStream: MutableList<String> = mutableListOf()
 
         chunks.forEach { chunk ->
@@ -179,7 +184,7 @@ class FourthSolution : Solver() {
         return bitStream
     }
 
-    fun bigIntCaster(chunks: List<String>): MutableList<BigInteger> {
+    private fun bigIntCaster(chunks: List<String>): MutableList<BigInteger> {
         val bigIntStream: MutableList<BigInteger> = mutableListOf()
         chunks.forEach { chunk ->
             bigIntStream.add(chunk.toBigInteger(2)) // we are working with bin numbers
