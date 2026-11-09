@@ -36,7 +36,7 @@ class FourthSolution : Solver() {
 
     var encodingStandard = EncodingTypes.UTF8
         private set
-    var filerForUTF8 = true // idk if this is required
+    var filerForUTF8 = false // idk if this is required
         private set
     var primeLength = 14 // amount of digits in prime number, 14 is minimum
     var messageChuckSize = 8
@@ -156,7 +156,7 @@ class FourthSolution : Solver() {
                 encodingStandard = EncodingTypes.UTF8
                 bitsPerChar = 8
                 messageChuckSize = 8
-                filerForUTF8 = true
+//                filerForUTF8 = true
                 paddingCharStr = "00000000"
             }
 
@@ -164,7 +164,7 @@ class FourthSolution : Solver() {
                 encodingStandard = EncodingTypes.UTF16
                 bitsPerChar = 16
                 messageChuckSize = 4
-                filerForUTF8 = false
+//                filerForUTF8 = false
                 paddingCharStr = "0000000000000000"
             }
         }
@@ -174,12 +174,16 @@ class FourthSolution : Solver() {
 
     private fun bitCaster(chunks: List<String>): MutableList<String> {
         val bitStream: MutableList<String> = mutableListOf()
-
+        val placeholderChar = '?'.code.toString(2).padStart(bitsPerChar, '0')
         chunks.forEach { chunk ->
             val chunkInBits = StringBuilder()
 
             chunk.forEach { char ->
-                chunkInBits.append(char.code.toString(2).padStart(bitsPerChar, '0'))
+                val unsafeChar = char.code.toString(2).padStart(bitsPerChar, '0')
+                val safeChar = if (unsafeChar.length > bitsPerChar) {
+                    placeholderChar
+                } else unsafeChar
+                chunkInBits.append(safeChar)
             }
 
             if (chunk.length < messageChuckSize) {
