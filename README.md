@@ -34,6 +34,14 @@ A modular, dark-themed desktop application built with **Kotlin** and **Java Swin
   - dynamic wildcard masking, including numbers in 5x5 grid mode
   - seed based table generation
   - Formatted Output chunked into 5-character blocks
+- **4. RSA Cipher**
+  - Full support for encryption and decryption
+  - using Miller–Rabin primality test for validating prime numbers
+  - local Key=Pair generation
+  - user can set custom test depth and key length
+  - option to use UTF-8 or UTF-16 encoding standard
+  - masking message into blocks of 8/4 chars with 8/16 bits per character based on chosen encoding
+  - chars out of range are masked with '?' flag
 - more coming soon..
 
 ---
