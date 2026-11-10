@@ -96,7 +96,7 @@ class FourthSolution : Solver() {
                 }
             }
 
-            println(decryptedChunkedInputBin.joinToString("").chunked(bitsPerChar).joinToString(" "))
+//            println(decryptedChunkedInputBin.joinToString("").chunked(bitsPerChar).joinToString(" "))
 
             return decryptedMessage.toString()
         }

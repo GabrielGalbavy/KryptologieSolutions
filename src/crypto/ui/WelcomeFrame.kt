@@ -7,30 +7,31 @@ import javax.swing.*
 import javax.swing.event.PopupMenuEvent
 import javax.swing.event.PopupMenuListener
 
-class GradientPanel(
-    var startColor: Color = Color(18, 20, 40),
-    var endColor: Color = Color(35, 45, 85),
-    var isVertical: Boolean = true
-) : JPanel() {
 
-    override fun paintComponent(g: Graphics) {
-        super.paintComponent(g)
-        val g2d = g as Graphics2D
-
-        g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY)
-
-        val x2 = if (isVertical) 0f else width.toFloat()
-        val y2 = if (isVertical) height.toFloat() else 0f
-
-        val gradient = GradientPaint(0f, 0f, startColor, x2, y2, endColor)
-
-        g2d.paint = gradient
-        g2d.fillRect(0, 0, width, height)
-    }
-}
 
 class WelcomeFrame : JFrame("Crypto Solver") {
 
+    class GradientPanel(
+        var startColor: Color = Color(18, 20, 40),
+        var endColor: Color = Color(35, 45, 85),
+        var isVertical: Boolean = true
+    ) : JPanel() {
+
+        override fun paintComponent(g: Graphics) {
+            super.paintComponent(g)
+            val g2d = g as Graphics2D
+
+            g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY)
+
+            val x2 = if (isVertical) 0f else width.toFloat()
+            val y2 = if (isVertical) height.toFloat() else 0f
+
+            val gradient = GradientPaint(0f, 0f, startColor, x2, y2, endColor)
+
+            g2d.paint = gradient
+            g2d.fillRect(0, 0, width, height)
+        }
+    }
 
     init {
         defaultCloseOperation = EXIT_ON_CLOSE

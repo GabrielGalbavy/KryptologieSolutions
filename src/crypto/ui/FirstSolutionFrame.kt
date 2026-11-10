@@ -42,7 +42,7 @@ class FirstSolutionFrame : JFrame() {
         contentPane.background = colorPackage.bgPrimary
 
 
-        val mainBackground = GradientPanel(
+        val mainBackground = WelcomeFrame.GradientPanel(
             startColor = Color(gradientFrom[0], gradientFrom[1], gradientFrom[2]), endColor = Color(
                 gradientTill[0], gradientTill[1], gradientTill[2]
             ), isVertical = true
