@@ -30,7 +30,7 @@ class FourthSolutionFrame : JFrame("RSA Šifra") {
 
     init {
         defaultCloseOperation = EXIT_ON_CLOSE
-        setSize(1200, 800)
+        setSize(1300, 800)
         setLocationRelativeTo(null)
         layout = BorderLayout(20, 20)
         contentPane.background = Color.decode("#FFFFFF")
@@ -49,14 +49,13 @@ class FourthSolutionFrame : JFrame("RSA Šifra") {
         gbc.gridy = 0; gbc.gridheight = 1; gbc.weighty = 0.0
 
         gbc.gridx = 0; gbc.gridwidth = 1; gbc.weightx = 0.33
-        topPanel.add(Box.createHorizontalStrut(1), gbc) // Ľavý stĺpec (33%)
+        topPanel.add(Box.createHorizontalStrut(1), gbc)
 
         gbc.gridx = 1; gbc.gridwidth = 1; gbc.weightx = 0.34
-        topPanel.add(Box.createHorizontalStrut(1), gbc) // Stredný prelievací stĺpec (34%)
+        topPanel.add(Box.createHorizontalStrut(1), gbc)
 
         gbc.gridx = 2; gbc.gridwidth = 1; gbc.weightx = 0.33
-        topPanel.add(Box.createHorizontalStrut(1), gbc) // Pravý stĺpec (33%)
-
+        topPanel.add(Box.createHorizontalStrut(1), gbc)
 
         // ---------------- MENU & RSA NADPIS (Vľavo Hore - 1/3) ----------------
         gbc.gridy = 1; gbc.weighty = 0.55
@@ -74,11 +73,9 @@ class FourthSolutionFrame : JFrame("RSA Šifra") {
                 dispose()
             }
         }
-        backBtn.addActionListener { dispose() }
         val menuWrapper = JPanel(FlowLayout(FlowLayout.LEFT, 0, 0)).apply { background = Color.decode("#FFFFFF") }
         menuWrapper.add(backBtn)
 
-        // Opravený horizontálny RSA nadpis
         val rsaLabel = JLabel(
             "<html><center>" +
                     "<font color='#8A2BE2' size='+4'><b>RSA</b></font><br>" +
@@ -96,19 +93,18 @@ class FourthSolutionFrame : JFrame("RSA Šifra") {
 
         // ---------------- MODRÝ INPUT (Vpravo Hore - 2/3) ----------------
         val inputTextArea = JTextArea("THIS IS MY SECRET MESSAGE FOR ENCRYPTION.")
-        inputTextArea.background = colorInputBlue; inputTextArea.foreground = Color.WHITE; inputTextArea.font =
-            Font("Monospaced", Font.PLAIN, 16)
+        inputTextArea.background = colorInputBlue; inputTextArea.foreground = Color.WHITE; inputTextArea.font = Font("Monospaced", Font.PLAIN, 16)
         inputTextArea.margin = Insets(15, 15, 15, 15); inputTextArea.lineWrap = true
         val inputScroll = JScrollPane(inputTextArea).apply { border = null }
 
-        gbc.gridx = 1; gbc.gridwidth = 2 // Zaberá stredný a pravý stĺpec
+        gbc.gridx = 1; gbc.gridwidth = 2
         topPanel.add(inputScroll, gbc)
 
         // ---------------- KEY SECTOR (Vľavo Dole - 2/3) ----------------
         gbc.gridy = 2; gbc.weighty = 0.45
 
         val keySectorPanel = buildKeySector()
-        gbc.gridx = 0; gbc.gridwidth = 2 // Zaberá ľavý a stredný stĺpec
+        gbc.gridx = 0; gbc.gridwidth = 2
         topPanel.add(keySectorPanel, gbc)
 
         // ---------------- AKCIE & ENCODING (Vpravo Dole - 1/3) ----------------
@@ -117,28 +113,18 @@ class FourthSolutionFrame : JFrame("RSA Šifra") {
         val rbGbc = GridBagConstraints()
         rbGbc.fill = GridBagConstraints.BOTH; rbGbc.weightx = 1.0
 
-        // Tlačidlá
         rbGbc.gridy = 0; rbGbc.weighty = 0.4
         val btnPanel = JPanel(FlowLayout(FlowLayout.CENTER, 5, 10)).apply { background = Color.decode("#FFFFFF") }
-        val generateKeysBtn = createFlatButton("GENERATE KEYS", colorGenerateMint, Color.BLACK).apply {
-            preferredSize = Dimension(180, 45)
-        }
-        val decryptBtn =
-            createFlatButton("DECRYPT", colorDecryptOrange, Color.WHITE).apply { preferredSize = Dimension(115, 45) }
-        val encryptBtn =
-            createFlatButton("ENCRYPT", colorEncryptBlue, Color.WHITE).apply { preferredSize = Dimension(115, 45) }
+        val generateKeysBtn = createFlatButton("GENERATE KEYS", colorGenerateMint, Color.BLACK).apply { preferredSize = Dimension(180, 45) }
+        val decryptBtn = createFlatButton("DECRYPT", colorDecryptOrange, Color.WHITE).apply { preferredSize = Dimension(115, 45) }
+        val encryptBtn = createFlatButton("ENCRYPT", colorEncryptBlue, Color.WHITE).apply { preferredSize = Dimension(115, 45) }
         btnPanel.add(generateKeysBtn); btnPanel.add(decryptBtn); btnPanel.add(encryptBtn)
         rightBottomPanel.add(btnPanel, rbGbc)
 
-        // Encoding Standard
         rbGbc.gridy = 1; rbGbc.weighty = 0.6
-        val encodingPanel =
-            JPanel(BorderLayout(10, 15)).apply { background = colorEncodingBg; border = EmptyBorder(10, 15, 15, 15) }
+        val encodingPanel = JPanel(BorderLayout(10, 15)).apply { background = colorEncodingBg; border = EmptyBorder(10, 15, 15, 15) }
         encodingPanel.add(
-            JLabel(
-                "<html><center>MESSAGE ENCODING<br>STANDARD</center></html>",
-                SwingConstants.CENTER
-            ).apply { font = Font("Monospaced", Font.BOLD, 15) }, BorderLayout.NORTH
+            JLabel("<html><center>MESSAGE ENCODING<br>STANDARD</center></html>", SwingConstants.CENTER).apply { font = Font("Monospaced", Font.BOLD, 15) }, BorderLayout.NORTH
         )
         val toggleWrapper = JPanel(GridLayout(2, 1, 0, 10)).apply { isOpaque = false }
         val utf8Btn = createFlatButton("UTF-8", colorToggleActive, Color.WHITE)
@@ -146,12 +132,11 @@ class FourthSolutionFrame : JFrame("RSA Šifra") {
         toggleWrapper.add(utf8Btn); toggleWrapper.add(utf16Btn)
         encodingPanel.add(toggleWrapper, BorderLayout.CENTER)
 
-        val narrowEncodingWrapper =
-            JPanel(BorderLayout()).apply { background = Color.decode("#FFFFFF"); border = EmptyBorder(10, 30, 10, 30) }
+        val narrowEncodingWrapper = JPanel(BorderLayout()).apply { background = Color.decode("#FFFFFF"); border = EmptyBorder(10, 30, 10, 30) }
         narrowEncodingWrapper.add(encodingPanel, BorderLayout.CENTER)
         rightBottomPanel.add(narrowEncodingWrapper, rbGbc)
 
-        gbc.gridx = 2; gbc.gridwidth = 1 // Zaberá iba pravý stĺpec
+        gbc.gridx = 2; gbc.gridwidth = 1
         topPanel.add(rightBottomPanel, gbc)
 
 
@@ -175,9 +160,11 @@ class FourthSolutionFrame : JFrame("RSA Šifra") {
         val localPrivateNField = findComponentByName(keySectorPanel, "localPrivateNField") as JTextField
         val localPrivateDField = findComponentByName(keySectorPanel, "localPrivateDField") as JPasswordField
         val keyLengthField = findComponentByName(keySectorPanel, "keyLengthField") as JTextField
-        val remotePublicKeyArea = findComponentByName(keySectorPanel, "remotePublicKeyArea") as JTextArea
 
-        // Nové ovládanie pre Show/Hide tlačidlo privátneho kľúča
+        // Načítanie dvoch nových polí pre Remote Public Key
+        val remotePublicNField = findComponentByName(keySectorPanel, "remotePublicNField") as JTextField
+        val remotePublicEField = findComponentByName(keySectorPanel, "remotePublicEField") as JTextField
+
         val toggleKeyBtn = findComponentByName(keySectorPanel, "toggleKeyBtn") as JButton
         val defaultEchoChar = localPrivateDField.echoChar
 
@@ -185,11 +172,11 @@ class FourthSolutionFrame : JFrame("RSA Šifra") {
             if (localPrivateDField.echoChar == '\u0000') {
                 localPrivateDField.echoChar = defaultEchoChar
                 toggleKeyBtn.text = "SHOW"
-                toggleKeyBtn.background = Color.decode("#8A2BE2") // Fialová
+                toggleKeyBtn.background = Color.decode("#8A2BE2")
             } else {
                 localPrivateDField.echoChar = '\u0000'
                 toggleKeyBtn.text = "HIDE"
-                toggleKeyBtn.background = colorToggleInactive // Sivá
+                toggleKeyBtn.background = colorToggleInactive
             }
         }
 
@@ -220,19 +207,19 @@ class FourthSolutionFrame : JFrame("RSA Šifra") {
         }
 
         encryptBtn.addActionListener {
-            val remoteKeyRaw = remotePublicKeyArea.text.trim()
-            if (remoteKeyRaw.isEmpty()) {
-                outputTextArea.text =
-                    "ERROR: Remote Public Key is missing! Enter 'N E' into the white area in Key Sector."
+            val nRaw = remotePublicNField.text.trim()
+            val eRaw = remotePublicEField.text.trim()
+
+            if (nRaw.isEmpty() || eRaw.isEmpty()) {
+                outputTextArea.text = "ERROR: Remote Public Key is missing! Enter both Modul N and Exponent."
                 return@addActionListener
             }
             try {
-                val parts = remoteKeyRaw.split(Regex("\\s+"))
-                backend.remotePublicKey = Pair(parts[0].toBigInteger(), parts[1].toBigInteger())
+                // Posielame zložený klúč priamo do backendu
+                backend.remotePublicKey = Pair(nRaw.toBigInteger(), eRaw.toBigInteger())
                 outputTextArea.text = backend.encrypt(inputTextArea.text)
             } catch (e: Exception) {
-                outputTextArea.text =
-                    "ERROR: Invalid Remote Public Key format. Ensure it's two numbers separated by a space."
+                outputTextArea.text = "ERROR: Invalid Remote Public Key format. Ensure both fields contain valid numbers."
             }
         }
 
@@ -259,72 +246,108 @@ class FourthSolutionFrame : JFrame("RSA Šifra") {
         panel.background = colorKeySectorBg; panel.border = EmptyBorder(15, 15, 15, 15)
         val kGbc = GridBagConstraints().apply { fill = GridBagConstraints.HORIZONTAL; insets = Insets(5, 8, 5, 8) }
 
+        val fixedDim = Dimension(10, 28)
+        // Nový font pre všetky vstupné a výstupné biele polia
+        val inputFont = Font("Monospaced", Font.PLAIN, 14)
+
         kGbc.gridx = 0; kGbc.gridy = 0; kGbc.gridwidth = 4
-        panel.add(JLabel("KEY SECTOR", SwingConstants.CENTER).apply { font = titleFont }, kGbc)
+        // Nadpis KEY SECTOR zmenený zo Serif na Monospaced
+        panel.add(JLabel("KEY SECTOR", SwingConstants.CENTER).apply { font = Font("Monospaced", Font.BOLD, 22) }, kGbc)
 
         kGbc.gridwidth = 1; kGbc.gridy = 1; kGbc.weightx = 0.0
         panel.add(JLabel("KEY LENGTH").apply { font = mainFont }, kGbc)
         kGbc.gridx = 1; kGbc.weightx = 0.2
-        panel.add(JTextField(backend.primeLength.toString(), 5).apply { name = "keyLengthField" }, kGbc)
+        panel.add(JTextField(backend.primeLength.toString(), 5).apply { name = "keyLengthField"; font = inputFont }, kGbc)
 
         kGbc.gridx = 0; kGbc.gridy = 2; kGbc.weightx = 0.0
         panel.add(JLabel("<html>RABIN MILLER<br>TEST DEPTH</html>").apply { font = mainFont }, kGbc)
         kGbc.gridx = 1; kGbc.weightx = 0.2
-        panel.add(JTextField(backend.k.toString(), 5), kGbc)
+        panel.add(JTextField(backend.k.toString(), 5).apply { font = inputFont }, kGbc)
 
         kGbc.gridx = 0; kGbc.gridy = 3; kGbc.weightx = 0.0
         panel.add(JLabel("EXPONENT").apply { font = mainFont }, kGbc)
         kGbc.gridx = 1; kGbc.weightx = 0.2
-        panel.add(JTextField(backend.e.toString(), 5), kGbc)
+        panel.add(JTextField(backend.e.toString(), 5).apply { font = inputFont }, kGbc)
 
+        // --- ROZDELENÝ REMOTE PUBLIC KEY ---
         kGbc.gridx = 2; kGbc.gridy = 1; kGbc.gridheight = 3; kGbc.weightx = 0.6; kGbc.fill = GridBagConstraints.BOTH
-        val remoteWrapper = JPanel(BorderLayout()).apply { isOpaque = false }
+        val remoteWrapper = JPanel(BorderLayout(0, 5)).apply { isOpaque = false }
         remoteWrapper.add(JLabel("<html><center>REMOTE PUBLIC KEY<br><font size='-2'>FOR ENCRYPTION</font></center></html>").apply {
             font = mainFont; horizontalAlignment = SwingConstants.CENTER
         }, BorderLayout.NORTH)
-        remoteWrapper.add(
-            JScrollPane(JTextArea().apply { name = "remotePublicKeyArea"; lineWrap = true }),
-            BorderLayout.CENTER
-        )
+
+        val remoteInputPanel = JPanel(GridBagLayout()).apply { isOpaque = false }
+        val rGbc = GridBagConstraints().apply { fill = GridBagConstraints.HORIZONTAL; weightx = 1.0 }
+
+        rGbc.gridy = 0; rGbc.insets = Insets(0, 0, 2, 0)
+        // Podnadpis zmenený zo SansSerif na Monospaced
+        remoteInputPanel.add(JLabel("P x Q (Modul N)", SwingConstants.CENTER).apply { font = Font("Monospaced", Font.BOLD, 10) }, rGbc)
+
+        rGbc.gridy = 1; rGbc.insets = Insets(0, 0, 8, 0)
+        remoteInputPanel.add(JTextField().apply { name = "remotePublicNField"; preferredSize = fixedDim; minimumSize = fixedDim; font = inputFont }, rGbc)
+
+        rGbc.gridy = 2; rGbc.insets = Insets(0, 0, 2, 0)
+        // Podnadpis zmenený zo SansSerif na Monospaced
+        remoteInputPanel.add(JLabel("EXPONENT", SwingConstants.CENTER).apply { font = Font("Monospaced", Font.BOLD, 10) }, rGbc)
+
+        rGbc.gridy = 3; rGbc.insets = Insets(0, 0, 0, 0)
+        remoteInputPanel.add(JTextField().apply { name = "remotePublicEField"; preferredSize = fixedDim; minimumSize = fixedDim; font = inputFont }, rGbc)
+
+        val remoteAlignPanel = JPanel(BorderLayout()).apply { isOpaque = false }
+        remoteAlignPanel.add(remoteInputPanel, BorderLayout.NORTH)
+
+        remoteWrapper.add(remoteAlignPanel, BorderLayout.CENTER)
         panel.add(remoteWrapper, kGbc)
 
-        kGbc.gridx = 0; kGbc.gridy = 4; kGbc.gridwidth = 4; kGbc.gridheight = 1; kGbc.fill =
-            GridBagConstraints.HORIZONTAL
-        panel.add(JLabel("LOCAL KEYS").apply { font = Font("Serif", Font.BOLD, 18) }, kGbc)
+        // --- LOCAL KEYS ---
+        kGbc.gridx = 0; kGbc.gridy = 4; kGbc.gridwidth = 4; kGbc.gridheight = 1; kGbc.fill = GridBagConstraints.HORIZONTAL
+        // Nadpis LOCAL KEYS zmenený zo Serif na Monospaced
+        panel.add(JLabel("LOCAL KEYS").apply { font = Font("Monospaced", Font.BOLD, 18) }, kGbc)
 
         kGbc.gridy = 5; kGbc.gridwidth = 1; kGbc.weightx = 0.0
         panel.add(JLabel(""), kGbc)
         kGbc.gridx = 1; kGbc.weightx = 0.7; panel.add(JLabel("P x Q (Modul N)", SwingConstants.CENTER).apply {
-            font = Font("SansSerif", Font.BOLD, 10)
+            font = Font("Monospaced", Font.BOLD, 10)
         }, kGbc)
         kGbc.gridx = 2; kGbc.weightx = 0.3; panel.add(JLabel("EXPONENT", SwingConstants.CENTER).apply {
-            font = Font("SansSerif", Font.BOLD, 10)
+            font = Font("Monospaced", Font.BOLD, 10)
         }, kGbc)
 
         kGbc.gridx = 0; kGbc.gridy = 6; kGbc.weightx = 0.0
         panel.add(JLabel("PUBLIC").apply { font = mainFont }, kGbc)
         kGbc.gridx = 1; kGbc.weightx = 0.7
-        panel.add(JTextField().apply { name = "localPublicNField"; isEditable = false }, kGbc)
+        panel.add(JTextField().apply { name = "localPublicNField"; isEditable = false; preferredSize = fixedDim; minimumSize = fixedDim; font = inputFont }, kGbc)
         kGbc.gridx = 2; kGbc.weightx = 0.3
-        panel.add(JTextField().apply { name = "localPublicEField"; isEditable = false }, kGbc)
+        panel.add(JTextField().apply { name = "localPublicEField"; isEditable = false; preferredSize = fixedDim; minimumSize = fixedDim; font = inputFont }, kGbc)
 
         kGbc.gridx = 0; kGbc.gridy = 7; kGbc.weightx = 0.0
         panel.add(JLabel("PRIVATE").apply { font = mainFont }, kGbc)
         kGbc.gridx = 1; kGbc.weightx = 0.7
-        panel.add(JTextField().apply { name = "localPrivateNField"; isEditable = false }, kGbc)
+        panel.add(JTextField().apply { name = "localPrivateNField"; isEditable = false; preferredSize = fixedDim; minimumSize = fixedDim; font = inputFont }, kGbc)
 
-        // --- FIX PRE PRIVATE EXPONENT POLE A SHOW TLAČIDLO ---
         val privateWrapper = JPanel(BorderLayout(5, 0)).apply { isOpaque = false }
-
         val privateField = object : JPasswordField() {
             init {
                 name = "localPrivateDField"
                 isEditable = false
+                font = inputFont // Aplikované aj na pole s heslovými hviezdičkami
+                putClientProperty("JPasswordField.cutCopyPastable", true)
             }
-            // Zafixujeme šírku komponentu, aby sa nemigroval podľa dĺžky textu
             override fun getPreferredSize(): Dimension {
                 val d = super.getPreferredSize()
                 return Dimension(d.width, d.height)
+            }
+            override fun copy() {
+                val fullText = String(password)
+                val textToCopy = if (selectedText != null) {
+                    fullText.substring(selectionStart, selectionEnd)
+                } else {
+                    fullText
+                }
+                if (textToCopy.isNotEmpty()) {
+                    val stringSelection = java.awt.datatransfer.StringSelection(textToCopy)
+                    Toolkit.getDefaultToolkit().systemClipboard.setContents(stringSelection, null)
+                }
             }
         }
         privateWrapper.add(privateField, BorderLayout.CENTER)
@@ -332,7 +355,6 @@ class FourthSolutionFrame : JFrame("RSA Šifra") {
         val toggleKeyBtn = createFlatButton("SHOW", Color.decode("#8A2BE2"), Color.WHITE).apply {
             name = "toggleKeyBtn"
             font = Font("Monospaced", Font.BOLD, 12)
-            // Dáme tlačidlu fixnú šírku, aby nezmenilo rozmer wrapperu
             preferredSize = Dimension(75, 28)
         }
         privateWrapper.add(toggleKeyBtn, BorderLayout.EAST)
