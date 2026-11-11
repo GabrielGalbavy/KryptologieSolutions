@@ -200,7 +200,7 @@ class FourthSolutionFrame : JFrame("RSA Šifra") {
                 localPublicEField.text = backend.localPublicKey?.second.toString()
                 localPrivateNField.text = backend.localPrivateKey?.first.toString()
                 localPrivateDField.text = backend.localPrivateKey?.second.toString()
-                outputTextArea.text = "Keys successfully generated and loaded into local memory."
+                outputTextArea.text = "Keys successfully generated. [${backend.testedKeys} numbers tested, got -> p=${backend.p}; q=${backend.q}]"
             } catch (e: Exception) {
                 outputTextArea.text = "Error generating keys. Check the length parameter."
             }
@@ -255,7 +255,7 @@ class FourthSolutionFrame : JFrame("RSA Šifra") {
         panel.add(JLabel("KEY SECTOR", SwingConstants.CENTER).apply { font = Font("Monospaced", Font.BOLD, 22) }, kGbc)
 
         kGbc.gridwidth = 1; kGbc.gridy = 1; kGbc.weightx = 0.0
-        panel.add(JLabel("KEY LENGTH").apply { font = mainFont }, kGbc)
+        panel.add(JLabel("p/q LENGTH").apply { font = mainFont }, kGbc)
         kGbc.gridx = 1; kGbc.weightx = 0.2
         panel.add(JTextField(backend.primeLength.toString(), 5).apply { name = "keyLengthField"; font = inputFont }, kGbc)
 

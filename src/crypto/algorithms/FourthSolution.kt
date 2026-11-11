@@ -14,14 +14,17 @@ class FourthSolution : Solver() {
 
     //////// variables ////////
 
+
     enum class EncodingTypes {
         UTF8, UTF16
     }
 
     // keys
     var localPublicKey: Pair<BigInteger, BigInteger>? = null
+
     var localPrivateKey: Pair<BigInteger, BigInteger>? = null
     var remotePublicKey: Pair<BigInteger, BigInteger>? = null
+    var testedKeys: Int = 0 // counts how many numbers were tested before keys were successfully generated
 
     // key components
     var n: BigInteger? = null
@@ -114,7 +117,7 @@ class FourthSolution : Solver() {
     fun generateKeys() {
         var firstNumberValid = false
         var secondNumberValid = false
-        var testedKeys = 0
+        testedKeys = 0
         do {
             if (!firstNumberValid) {
                 setRandomPrimes(1)
