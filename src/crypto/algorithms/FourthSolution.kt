@@ -20,10 +20,11 @@ class FourthSolution : Solver() {
     }
 
     // keys
-    var localPublicKey: Pair<BigInteger, BigInteger>? = null
 
-    var localPrivateKey: Pair<BigInteger, BigInteger>? = null
     var remotePublicKey: Pair<BigInteger, BigInteger>? = null
+
+    var localPublicKey: Pair<BigInteger, BigInteger>? = null
+    var localPrivateKey: Pair<BigInteger, BigInteger>? = null
     var testedKeys: Int = 0 // counts how many numbers were tested before keys were successfully generated
 
     // key components
@@ -239,6 +240,8 @@ class FourthSolution : Solver() {
 
     private fun rabinMillerTest(testedNumber: BigInteger): Boolean {
         /**
+         * explained in dedicated .pdf file (they are in gitignore so good lock everyone else)
+         *
          * step 1.) find n-1 = 2^k * m
          */
         val nMinusOne = testedNumber.subtract(BigInteger.ONE)
