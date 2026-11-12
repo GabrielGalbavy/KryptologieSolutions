@@ -167,7 +167,7 @@ class FourthSolution : Solver() {
             EncodingTypes.UTF16 -> {
                 encodingStandard = EncodingTypes.UTF16
                 bitsPerChar = 16
-                messageChuckSize = 4
+                messageChuckSize = 8
 //                filerForUTF8 = false
                 paddingCharStr = "0000000000000000"
             }
