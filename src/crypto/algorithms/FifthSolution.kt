@@ -53,4 +53,35 @@ class FifthSolution {
     //////// other functions ////////
 
 
+    /**
+     * Function tries to load a file from [inputFilePath] location.
+     *
+     * @return true if everything okay, false file does not exist, can not be read or is not a file bad bad bad bad bad bad
+     */
+    fun loadFile(): Boolean {
+        if (inputFilePath.isBlank()) {
+            file = null
+            fileMetadata = null
+            println("no file path provided")
+            return false
+        }
+        val possibleFile = File(inputFilePath.trim())
+
+        if (possibleFile.exists() && possibleFile.isFile && possibleFile.canRead()) {
+            file = possibleFile
+            fileMetadata = extractMetadata(file!!)
+            println("File loaded successfully amaze amaze amaze")
+            return true
+
+        } else {
+            file = null
+            fileMetadata = null
+            println("File not found/is unreadable at: ${possibleFile.absolutePath}")
+            return false
+        }
+    }
+
+    private fun extractMetadata(target: File): FileMetadata {
+        TODO()
+    }
 }
