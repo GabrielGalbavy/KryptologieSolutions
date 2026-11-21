@@ -50,8 +50,16 @@ class FifthSolution {
      *
      * @see [crypto.algorithms.FourthSolution]
      */
-    fun signThisFile() {
-        TODO()
+    fun signThisFile(): Boolean {
+        if (loadFile()) {
+            if (setupEncryption()) {
+                getFileHash()
+                encryptedFileHash = encryptHash(fileHash)
+                println(encryptedFileHash)
+                println(decryptHash(encryptedFileHash))
+            }
+        }
+        return false
     }
 
     fun verifySignature() {
@@ -91,5 +99,62 @@ class FifthSolution {
 
     private fun extractMetadata(target: File): FileMetadata {
         TODO()
+    }
+
+
+    //////// HASH functions ////////
+
+    fun getFileHash() {
+        fileHash = file!!.inputStream().use { getStreamHash(it) }
+        println("hash generated > $fileHash")
+    }
+
+    fun getStreamHash(input: InputStream): String {
+        val digest = MessageDigest.getInstance("SHA3-512")
+        val buffer = ByteArray(8192) // to bypass 2GB size limit for single file we use buffer
+
+        var bytesRead = input.read(buffer)
+        while (bytesRead != -1) {
+            digest.update(buffer, 0, bytesRead)
+            bytesRead = input.read(buffer)
+        }
+
+        return digest.digest().joinToString("") { "%02x".format(it) }
+    }
+
+
+    //////// encrypt functions ////////
+
+    fun setupEncryption(): Boolean {
+        keyMaker.setEncodingType(FourthSolution.EncodingTypes.UTF8)
+        keyMaker.generateKeys()
+
+        privateKey = keyMaker.localPrivateKey
+        publicKey = keyMaker.localPublicKey
+
+        keyMaker.remotePublicKey = privateKey // so the encr/decr functions work as intended
+        keyMaker.localPrivateKey = publicKey
+
+        if (privateKey != null && publicKey != null) {
+            println("keys generated")
+            println("privateKey: $privateKey")
+            println("publicKey: $publicKey")
+            return true
+        }
+
+        return false
+    }
+
+    fun setupDecryption(): Boolean {
+        TODO("setup keyMaker so it uses provided keys for checking hash" +
+                " also setupEncryption must only set the encrypting part")
+    }
+
+    fun encryptHash(hash: String): String {
+        return keyMaker.encrypt(hash)
+    }
+
+    fun decryptHash(encryptedHash: String): String {
+        return keyMaker.decrypt(encryptedHash)
     }
 }
