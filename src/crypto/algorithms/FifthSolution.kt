@@ -59,8 +59,7 @@ class FifthSolution {
     }
 
 
-    //////// other functions ////////
-
+    //////// file handling functions ////////
 
     /**
      * Function tries to load a file from [inputFilePath] location.
@@ -78,7 +77,7 @@ class FifthSolution {
 
         if (possibleFile.exists() && possibleFile.isFile && possibleFile.canRead()) {
             file = possibleFile
-            fileMetadata = extractMetadata(file!!)
+//            fileMetadata = extractMetadata(file!!)
             println("File loaded successfully amaze amaze amaze")
             return true
 
