@@ -1,7 +1,10 @@
 ﻿package crypto.algorithms
 
 import java.io.File
-import java.nio.file.Files
+import java.io.InputStream
+import java.math.BigInteger
+import java.security.MessageDigest
+import java.security.Security
 
 
 class FifthSolution {
@@ -28,10 +31,16 @@ class FifthSolution {
         private set
     var fileMetadata: FileMetadata? = null
         private set
-    var inputFilePath: String = """""" // paths must be in raw string format """..."""
+    var inputFilePath: String = """C:\file.txt""" // paths must be in raw string format """..."""
     var outputFilePath: String = ""
 
+    // all hash algorithms available in local runtime environment
+    val supportedHashAlgorithms = Security.getAlgorithms("MessageDigest").sorted()
     var fileHash: String = ""
+    var encryptedFileHash: String = ""
+
+    var privateKey: Pair<BigInteger, BigInteger>? = null
+    var publicKey: Pair<BigInteger, BigInteger>? = null
 
 
     //////// signature functions ////////
