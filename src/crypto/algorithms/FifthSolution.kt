@@ -5,6 +5,7 @@ import java.io.InputStream
 import java.math.BigInteger
 import java.security.MessageDigest
 import java.security.Security
+import java.util.*
 
 
 class FifthSolution {
@@ -32,7 +33,7 @@ class FifthSolution {
     var fileMetadata: FileMetadata? = null
         private set
     var inputFilePath: String = """C:\file.txt""" // paths must be in raw string format """..."""
-    var outputFilePath: String = ""
+    var outputFilePath: String = """"C:\UTB\AP3KR\forwardOutputHere\""""
 
     // all hash algorithms available in local runtime environment
     val supportedHashAlgorithms = Security.getAlgorithms("MessageDigest").sorted()
@@ -53,10 +54,12 @@ class FifthSolution {
     fun signThisFile(): Boolean {
         if (loadFile()) {
             if (setupEncryption()) {
-                getFileHash()
+
+                fileHash = getFileHashCode()
                 encryptedFileHash = encryptHash(fileHash)
-                println(encryptedFileHash)
-                println(decryptHash(encryptedFileHash))
+
+                exportKeys()
+
             }
         }
         return false
@@ -66,6 +69,29 @@ class FifthSolution {
         TODO()
     }
 
+    fun exportKeys(): Boolean {
+        val pub = publicKey ?: return false
+        val private = privateKey ?: return false
+
+        return outputFilePath.isNotBlank() && try {
+            val exportDir = File(outputFilePath.trim(), "keys_to_the_kingdom").apply { mkdirs() }
+            if (!exportDir.exists() && !exportDir.mkdirs()) {
+                return false
+            }
+
+            val rawPubKey = "${pub.first} ${pub.second}"
+            val rawPrivateKey = "${private.first} ${private.second}"
+
+            val base64PubKey = Base64.getEncoder().encodeToString(rawPubKey.toByteArray(Charsets.UTF_8))
+            val base64PrivateKey = Base64.getEncoder().encodeToString(rawPrivateKey.toByteArray(Charsets.UTF_8))
+
+            File(exportDir, "public_key.pub").writeText("RSA $base64PubKey")
+            File(exportDir, "private_key.priv").writeText("RSA $base64PrivateKey")
+            true
+        } catch (e: Exception) {
+            false
+        }
+    }
 
     //////// file handling functions ////////
 
@@ -104,9 +130,8 @@ class FifthSolution {
 
     //////// HASH functions ////////
 
-    fun getFileHash() {
-        fileHash = file!!.inputStream().use { getStreamHash(it) }
-        println("hash generated > $fileHash")
+    fun getFileHashCode(): String {
+        return file!!.inputStream().use { getStreamHash(it) }
     }
 
     fun getStreamHash(input: InputStream): String {
@@ -146,8 +171,9 @@ class FifthSolution {
     }
 
     fun setupDecryption(): Boolean {
-        TODO("setup keyMaker so it uses provided keys for checking hash" +
-                " also setupEncryption must only set the encrypting part")
+        TODO(
+            "setup keyMaker so it uses provided keys for checking hash" + " also setupEncryption must only set the encrypting part"
+        )
     }
 
     fun encryptHash(hash: String): String {
