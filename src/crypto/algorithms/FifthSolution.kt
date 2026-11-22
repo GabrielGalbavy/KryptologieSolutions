@@ -3,6 +3,7 @@
 import java.io.File
 import java.io.InputStream
 import java.math.BigInteger
+import java.nio.file.Files
 import java.security.MessageDigest
 import java.security.Security
 import java.util.*
@@ -69,15 +70,28 @@ class FifthSolution {
         TODO()
     }
 
-    fun exportKeys(): Boolean {
-        val pub = publicKey ?: return false
-        val private = privateKey ?: return false
 
-        return outputFilePath.isNotBlank() && try {
-            val exportDir = File(outputFilePath.trim(), "keys_to_the_kingdom").apply { mkdirs() }
-            if (!exportDir.exists() && !exportDir.mkdirs()) {
-                return false
-            }
+    fun exportKeys(): Boolean {
+        val pub = publicKey ?: run {
+            println("EXPORT ERROR: publicKey je null.")
+            return false
+        }
+        val private = privateKey ?: run {
+            println("EXPORT ERROR: privateKey je null.")
+            return false
+        }
+        if (outputFilePath.isBlank()) {
+            println("EXPORT ERROR: outputFilePath je prázdny.")
+            return false
+        }
+
+        return try {
+            val cleanPath = outputFilePath.trim().removeSurrounding("\"")
+            val selectedTarget = File(cleanPath)
+            val baseDir = if (selectedTarget.isFile) selectedTarget.parentFile else selectedTarget
+            val exportDir = File(baseDir, "keys_to_the_kingdom")
+
+            Files.createDirectories(exportDir.toPath())
 
             val rawPubKey = "${pub.first} ${pub.second}"
             val rawPrivateKey = "${private.first} ${private.second}"
@@ -87,8 +101,11 @@ class FifthSolution {
 
             File(exportDir, "public_key.pub").writeText("RSA $base64PubKey")
             File(exportDir, "private_key.priv").writeText("RSA $base64PrivateKey")
+
+            println("EXPORT OK: Uložené v ${exportDir.absolutePath}")
             true
         } catch (e: Exception) {
+            println("EXPORT ERROR (${e.javaClass.simpleName}): ${e.message}")
             false
         }
     }
