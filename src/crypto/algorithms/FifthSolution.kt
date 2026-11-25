@@ -145,6 +145,36 @@ class FifthSolution {
     }
 
 
+    fun generateKeyFile(keyType: String, path: String): Boolean {
+        if (path.isBlank() || keyType.isBlank()) return false // technically redundant, better safe than sorry tho
+
+        val keyPair = when (keyType) {
+            "priv" -> privateKey ?: return false
+            "pub" -> publicKey ?: return false
+            else -> return false
+        }
+
+        val fileContent = "RSA " + Base64.getEncoder()
+            .encodeToString("${keyPair.first} ${keyPair.second}".toByteArray(Charsets.UTF_8))
+
+        return try {
+            val cleanPath = path.trim().removeSurrounding("\"")
+            val target = File(cleanPath)
+            val keyFile = if (target.isDirectory) {
+                File(target, "key.$keyType")
+            } else {
+                File(cleanPath.removeSuffix(".$keyType") + ".$keyType")
+            }
+
+            keyFile.parentFile?.let { Files.createDirectories(it.toPath()) }
+            keyFile.writeText(fileContent, Charsets.UTF_8)
+            true
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+
     //////// HASH functions ////////
 
     fun getFileHashCode(): String {
