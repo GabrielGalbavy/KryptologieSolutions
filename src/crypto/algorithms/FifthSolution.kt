@@ -7,6 +7,8 @@ import java.nio.file.Files
 import java.security.MessageDigest
 import java.security.Security
 import java.util.*
+import kotlin.io.path.Path
+import kotlin.io.path.createDirectories
 
 
 class FifthSolution {
@@ -59,7 +61,6 @@ class FifthSolution {
                 fileHash = getFileHashCode()
                 encryptedFileHash = encryptHash(fileHash)
 
-                exportKeys()
 
             }
         }
@@ -72,40 +73,12 @@ class FifthSolution {
 
 
     fun exportKeys(): Boolean {
-        val pub = publicKey ?: run {
-            println("EXPORT ERROR: publicKey je null.")
-            return false
-        }
-        val private = privateKey ?: run {
-            println("EXPORT ERROR: privateKey je null.")
-            return false
-        }
-        if (outputFilePath.isBlank()) {
-            println("EXPORT ERROR: outputFilePath je prázdny.")
-            return false
-        }
-
-        return try {
+        return !(outputFilePath.isBlank() || privateKey == null || publicKey == null) && try {
             val cleanPath = outputFilePath.trim().removeSurrounding("\"")
-            val selectedTarget = File(cleanPath)
-            val baseDir = if (selectedTarget.isFile) selectedTarget.parentFile else selectedTarget
-            val exportDir = File(baseDir, "keys_to_the_kingdom")
-
-            Files.createDirectories(exportDir.toPath())
-
-            val rawPubKey = "${pub.first} ${pub.second}"
-            val rawPrivateKey = "${private.first} ${private.second}"
-
-            val base64PubKey = Base64.getEncoder().encodeToString(rawPubKey.toByteArray(Charsets.UTF_8))
-            val base64PrivateKey = Base64.getEncoder().encodeToString(rawPrivateKey.toByteArray(Charsets.UTF_8))
-
-            File(exportDir, "public_key.pub").writeText("RSA $base64PubKey")
-            File(exportDir, "private_key.priv").writeText("RSA $base64PrivateKey")
-
-            println("EXPORT OK: Uložené v ${exportDir.absolutePath}")
-            true
+            val updatedPath = """$cleanPath/keys_to_the_kingdom"""
+            Path(updatedPath).createDirectories()
+            generateKeyFile("priv", updatedPath) && generateKeyFile("pub", updatedPath)
         } catch (e: Exception) {
-            println("EXPORT ERROR (${e.javaClass.simpleName}): ${e.message}")
             false
         }
     }
