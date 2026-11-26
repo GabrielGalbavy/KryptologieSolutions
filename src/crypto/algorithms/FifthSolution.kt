@@ -172,6 +172,31 @@ class FifthSolution {
         return digest.digest().joinToString("") { "%02x".format(it) }
     }
 
+    fun createZipArchive(
+        zipPath: Path, filesToInclude: List<Path>, textEntries: Map<String, String> = emptyMap()
+    ): Boolean {
+        return try {
+            ZipOutputStream(zipPath.outputStream().buffered()).use { zipOut ->
+                filesToInclude.forEach { filePath ->
+                    zipOut.putNextEntry(ZipEntry(filePath.name))
+                    filePath.inputStream().use { input ->
+                        input.copyTo(zipOut)
+                    }
+                    zipOut.closeEntry()
+                }
+
+                textEntries.forEach { (entryName, content) ->
+                    zipOut.putNextEntry(ZipEntry(entryName))
+                    zipOut.write(content.toByteArray(Charsets.UTF_8))
+                    zipOut.closeEntry()
+                }
+            }
+            true
+        } catch (e: Exception) {
+            false
+        }
+    }
+
 
     //////// encrypt functions ////////
 
