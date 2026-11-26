@@ -75,20 +75,15 @@ class FifthSolution {
 
 
     fun exportKeys(): Boolean {
-        return outputFilePath.isNotBlank() && try {
+        val cleanPath = outputFilePath.trim().removeSurrounding("\"")
+
+        return cleanPath.isNotBlank() && try {
             val keysToTheKingdom = keyGen()
-
-            val cleanPath = outputFilePath.trim().removeSurrounding("\"")
             val currentDateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH_mm_ss"))
-            val updatedPath = """$cleanPath\key_export_$currentDateTime"""
-            Path(updatedPath).createDirectories()
+            val exportDir = Path(cleanPath, "key_export_$currentDateTime").createDirectories().toString()
 
-            generateKeyFile(
-                "priv", updatedPath, keysToTheKingdom.first
-            ) && generateKeyFile(
-                "pub", updatedPath, keysToTheKingdom.second
-            )
-
+            generateKeyFile("priv", exportDir, keysToTheKingdom.first) &&
+                    generateKeyFile("pub", exportDir, keysToTheKingdom.second)
         } catch (e: Exception) {
             println("exportKeys() Error: ${e.message}")
             false
