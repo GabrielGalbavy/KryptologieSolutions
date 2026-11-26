@@ -39,6 +39,7 @@ class FifthSolution {
         private set
     var inputFilePath: String = """C:\file.txt""" // paths must be in raw string format """..."""
     var outputFilePath: String = """"C:\UTB\AP3KR\forwardOutputHere\""""
+    var keyFilePath: String = """"""
 
     // all hash algorithms available in local runtime environment
     val supportedHashAlgorithms = Security.getAlgorithms("MessageDigest").sorted()
@@ -58,7 +59,7 @@ class FifthSolution {
      */
     fun signThisFile(): Boolean {
         if (loadFile()) {
-            if (setupEncryption()) {
+            if (setupSignature(keyFilePath)) {
 
                 fileHash = getFileHashCode()
                 encryptedFileHash = encryptHash(fileHash)
@@ -82,8 +83,9 @@ class FifthSolution {
             val currentDateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH_mm_ss"))
             val exportDir = Path(cleanPath, "key_export_$currentDateTime").createDirectories().toString()
 
-            generateKeyFile("priv", exportDir, keysToTheKingdom.first) &&
-                    generateKeyFile("pub", exportDir, keysToTheKingdom.second)
+            generateKeyFile("priv", exportDir, keysToTheKingdom.first) && generateKeyFile(
+                "pub", exportDir, keysToTheKingdom.second
+            )
         } catch (e: Exception) {
             println("exportKeys() Error: ${e.message}")
             false
