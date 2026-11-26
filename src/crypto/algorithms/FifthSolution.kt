@@ -178,23 +178,33 @@ class FifthSolution {
 
     //////// encrypt functions ////////
 
-    fun setupEncryption(): Boolean {
-        keyMaker.setEncodingType(FourthSolution.EncodingTypes.UTF8)
-        keyMaker.generateKeys()
+    fun extractKeyFromFile(targer: String): Pair<BigInteger, BigInteger>? {
+        TODO()
+    }
 
-        privateKey = keyMaker.localPrivateKey
-        publicKey = keyMaker.localPublicKey
+    fun setupEncryption(specifiedPrivateKey: String = ""): Boolean {
+        if (specifiedPrivateKey.isBlank()) {
+            val generatedKeys = keyGen()
+            privateKey = generatedKeys.first
+        } else {
+            val cleanPrivateKey = specifiedPrivateKey.trim().split(" ").map { it.toBigInteger() }
 
-        keyMaker.remotePublicKey = privateKey // so the encr/decr functions work as intended
-        keyMaker.localPrivateKey = publicKey
-
-        if (privateKey != null && publicKey != null) {
-            println("keys generated")
-            println("privateKey: $privateKey")
-            println("publicKey: $publicKey")
-            return true
+            privateKey = (cleanPrivateKey.first() to cleanPrivateKey.last())
+            // keyMaker uses public key in encrypt, so we set it to OUR private key
+            keyMaker.localPublicKey = (cleanPrivateKey.first() to cleanPrivateKey.last())
         }
 
+        if (privateKey != null && publicKey != null) {
+            println("privateKey set: $privateKey")
+            return true
+        }
+        return false
+    }
+
+    fun setupDecryption(specifiedPublicKey: String): Boolean {
+        if (specifiedPublicKey.isNotBlank()) {
+            val cleanPublicKey = specifiedPublicKey.trim().split(" ").map { it.toBigInteger() }
+        }
         return false
     }
 
