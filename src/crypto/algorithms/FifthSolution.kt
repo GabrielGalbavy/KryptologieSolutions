@@ -4,13 +4,15 @@ import java.io.File
 import java.io.InputStream
 import java.math.BigInteger
 import java.nio.file.Files
+import java.nio.file.Path
 import java.security.MessageDigest
 import java.security.Security
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
-import kotlin.io.path.Path
-import kotlin.io.path.createDirectories
+import java.util.zip.ZipEntry
+import java.util.zip.ZipOutputStream
+import kotlin.io.path.*
 
 
 class FifthSolution {
@@ -58,16 +60,33 @@ class FifthSolution {
      * @see [crypto.algorithms.FourthSolution]
      */
     fun signThisFile(): Boolean {
-        if (loadFile()) {
-            if (setupSignature(keyFilePath)) {
+        val cleanOutputDir = outputFilePath.trim().removeSurrounding("\"")
+        val cleanKeyDir = keyFilePath.trim().removeSurrounding("\"")
+        if (cleanOutputDir.isBlank() || cleanKeyDir.isBlank()) return false
 
-                fileHash = getFileHashCode()
-                encryptedFileHash = encryptHash(fileHash)
+        if (!loadFile() || !setupSignature(cleanKeyDir)) return false
 
+        return try {
+            val fileToSign = file!!.toPath()
+            fileHash = getFileHashCode()
+            encryptedFileHash = encryptHash(fileHash)
 
-            }
+            val base64Signature = Base64.getEncoder().encodeToString(encryptedFileHash.toByteArray(Charsets.UTF_8))
+            val publicKeyPath = Path(cleanKeyDir, "key.pub")
+            val targetZipPath = Path(cleanOutputDir, "${fileToSign.name}.zip")
+            targetZipPath.parent?.createDirectories()
+
+            val signContent = "RSA_SHA3-512 $base64Signature"
+
+            createZipArchive(
+                zipPath = targetZipPath,
+                filesToInclude = listOf(fileToSign, publicKeyPath),
+                textEntries = mapOf("${targetZipPath.name}.sign" to signContent)
+            )
+        } catch (e: Exception) {
+            println("signThisFile() Error: ${e.message}")
+            false
         }
-        return false
     }
 
     fun verifySignature() {
@@ -83,6 +102,7 @@ class FifthSolution {
             val currentDateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH_mm_ss"))
             val exportDir = Path(cleanPath, "key_export_$currentDateTime").createDirectories().toString()
 
+            keyFilePath = exportDir
             generateKeyFile("priv", exportDir, keysToTheKingdom.first) && generateKeyFile(
                 "pub", exportDir, keysToTheKingdom.second
             )
@@ -107,7 +127,7 @@ class FifthSolution {
             println("no file path provided")
             return false
         }
-        val possibleFile = File(inputFilePath.trim())
+        val possibleFile = File(inputFilePath.trim().removeSurrounding("\""))
 
         if (possibleFile.exists() && possibleFile.isFile && possibleFile.canRead()) {
             file = possibleFile
@@ -218,12 +238,12 @@ class FifthSolution {
             val digestedPrivateKey =
                 Base64.getDecoder().decode(extPrivateKey).decodeToString().trim().split(" ").map { it.toBigInteger() }
             privateKey = digestedPrivateKey[0] to digestedPrivateKey[1]
-            keyMaker.remotePublicKey = privateKey
 
             val digestedPublicKey =
                 Base64.getDecoder().decode(extPublicKey).decodeToString().trim().split(" ").map { it.toBigInteger() }
             publicKey = digestedPublicKey[0] to digestedPublicKey[1]
 
+            keyMaker.remotePublicKey = privateKey
             keyMaker.setEncodingType(FourthSolution.EncodingTypes.UTF8)
 
             privateKey != null && publicKey != null
@@ -233,11 +253,8 @@ class FifthSolution {
         }
     }
 
-    fun setupDecryption(specifiedPublicKey: String): Boolean {
-        if (specifiedPublicKey.isNotBlank()) {
-            val cleanPublicKey = specifiedPublicKey.trim().split(" ").map { it.toBigInteger() }
-        }
-        return false
+    fun setupVerification(): Boolean {
+        TODO("idk")
     }
 
     fun keyGen(): Pair<Pair<BigInteger, BigInteger>, Pair<BigInteger, BigInteger>> {
