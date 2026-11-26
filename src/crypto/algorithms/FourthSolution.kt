@@ -21,9 +21,20 @@ class FourthSolution : Solver() {
 
     // keys
 
+    /**
+     * Directly used in `encrypt()` function
+     *
+     * @see FourthSolution.encrypt
+     */
     var remotePublicKey: Pair<BigInteger, BigInteger>? = null
 
     var localPublicKey: Pair<BigInteger, BigInteger>? = null
+
+    /**
+     * Directly used in `decrypt()` function
+     *
+     * @see FourthSolution.decrypt
+     */
     var localPrivateKey: Pair<BigInteger, BigInteger>? = null
     var testedKeys: Int = 0 // counts how many numbers were tested before keys were successfully generated
 
