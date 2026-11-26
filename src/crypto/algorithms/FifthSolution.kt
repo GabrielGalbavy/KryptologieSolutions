@@ -6,6 +6,8 @@ import java.math.BigInteger
 import java.nio.file.Files
 import java.security.MessageDigest
 import java.security.Security
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.io.path.Path
 import kotlin.io.path.createDirectories
@@ -73,15 +75,26 @@ class FifthSolution {
 
 
     fun exportKeys(): Boolean {
-        return !(outputFilePath.isBlank() || privateKey == null || publicKey == null) && try {
+        return outputFilePath.isNotBlank() && try {
+            val keysToTheKingdom = keyGen()
+
             val cleanPath = outputFilePath.trim().removeSurrounding("\"")
-            val updatedPath = """$cleanPath/keys_to_the_kingdom"""
+            val currentDateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH_mm_ss"))
+            val updatedPath = """$cleanPath\key_export_$currentDateTime"""
             Path(updatedPath).createDirectories()
-            generateKeyFile("priv", updatedPath) && generateKeyFile("pub", updatedPath)
+
+            generateKeyFile(
+                "priv", updatedPath, keysToTheKingdom.first
+            ) && generateKeyFile(
+                "pub", updatedPath, keysToTheKingdom.second
+            )
+
         } catch (e: Exception) {
+            println("exportKeys() Error: ${e.message}")
             false
         }
     }
+
 
     //////// file handling functions ////////
 
@@ -118,17 +131,11 @@ class FifthSolution {
     }
 
 
-    fun generateKeyFile(keyType: String, path: String): Boolean {
+    fun generateKeyFile(keyType: String, path: String, dedicatedKey: Pair<BigInteger, BigInteger>): Boolean {
         if (path.isBlank() || keyType.isBlank()) return false // technically redundant, better safe than sorry tho
 
-        val keyPair = when (keyType) {
-            "priv" -> privateKey ?: return false
-            "pub" -> publicKey ?: return false
-            else -> return false
-        }
-
         val fileContent = "RSA " + Base64.getEncoder()
-            .encodeToString("${keyPair.first} ${keyPair.second}".toByteArray(Charsets.UTF_8))
+            .encodeToString("${dedicatedKey.first} ${dedicatedKey.second}".toByteArray(Charsets.UTF_8))
 
         return try {
             val cleanPath = path.trim().removeSurrounding("\"")
@@ -143,6 +150,7 @@ class FifthSolution {
             keyFile.writeText(fileContent, Charsets.UTF_8)
             true
         } catch (e: Exception) {
+            println("generateKeyFile() Error: ${e.message}")
             false
         }
     }
@@ -190,10 +198,10 @@ class FifthSolution {
         return false
     }
 
-    fun setupDecryption(): Boolean {
-        TODO(
-            "setup keyMaker so it uses provided keys for checking hash" + " also setupEncryption must only set the encrypting part"
-        )
+    fun keyGen(): Pair<Pair<BigInteger, BigInteger>, Pair<BigInteger, BigInteger>> {
+        keyMaker.setEncodingType(FourthSolution.EncodingTypes.UTF8)
+        keyMaker.generateKeys()
+        return (keyMaker.localPrivateKey!! to keyMaker.localPublicKey!!)
     }
 
     fun encryptHash(hash: String): String {
