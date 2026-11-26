@@ -177,23 +177,33 @@ class FifthSolution {
         TODO()
     }
 
-    fun setupEncryption(specifiedPrivateKey: String = ""): Boolean {
-        if (specifiedPrivateKey.isBlank()) {
-            val generatedKeys = keyGen()
-            privateKey = generatedKeys.first
-        } else {
-            val cleanPrivateKey = specifiedPrivateKey.trim().split(" ").map { it.toBigInteger() }
+    fun setupSignature(keyDirPath: String): Boolean {
+        val cleanPath = keyDirPath.trim().removeSurrounding("\"")
 
-            privateKey = (cleanPrivateKey.first() to cleanPrivateKey.last())
-            // keyMaker uses public key in encrypt, so we set it to OUR private key
-            keyMaker.localPublicKey = (cleanPrivateKey.first() to cleanPrivateKey.last())
-        }
+        return cleanPath.isNotBlank() && try {
+            val dir = File(cleanPath)
+            if (!dir.exists() || !dir.isDirectory) return false
 
-        if (privateKey != null && publicKey != null) {
-            println("privateKey set: $privateKey")
-            return true
+            val extPrivateKey =
+                File(dir, "key.priv").readText(Charsets.UTF_8).trim().drop(4).trim() // .drop(4) -> "RSA " seq
+            val extPublicKey = File(dir, "key.pub").readText(Charsets.UTF_8).trim().drop(4).trim()
+
+            val digestedPrivateKey =
+                Base64.getDecoder().decode(extPrivateKey).decodeToString().trim().split(" ").map { it.toBigInteger() }
+            privateKey = digestedPrivateKey[0] to digestedPrivateKey[1]
+            keyMaker.remotePublicKey = privateKey
+
+            val digestedPublicKey =
+                Base64.getDecoder().decode(extPublicKey).decodeToString().trim().split(" ").map { it.toBigInteger() }
+            publicKey = digestedPublicKey[0] to digestedPublicKey[1]
+
+            keyMaker.setEncodingType(FourthSolution.EncodingTypes.UTF8)
+
+            privateKey != null && publicKey != null
+        } catch (e: Exception) {
+            println("setupSignature() Error: ${e.message}")
+            false
         }
-        return false
     }
 
     fun setupDecryption(specifiedPublicKey: String): Boolean {
